@@ -1,0 +1,16 @@
+@import "styles/_colors.scss";
+@import "styles/_dimens.scss";
+
+.header {
+    box-shadow: 0 0 $default-spacing 0 rgba(0, 0, 0, 0.4);
+    display: flex;
+    height: $default-spacing * 4;
+    align-items: center;
+
+    .app-logo {
+        height: $default-spacing * 3;
+        padding: 0 $default-spacing;
+    }
+
+
+}

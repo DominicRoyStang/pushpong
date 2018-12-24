@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from "react";
+//import {Landing} from "./scenes"
+import {Game} from "./scenes"
+import "./App.css";
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Socket Physics</h1>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="App">
+                <Game />
+            </div>
+        );
+    }
 }
 
 export default App;
