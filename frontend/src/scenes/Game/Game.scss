@@ -1,0 +1,16 @@
+@import "styles/_colors.scss";
+@import "styles/_dimens.scss";
+
+.game-page {
+    display: flex;
+    flex-direction: column;
+
+    .game {
+        display: flex;
+        margin: $default-spacing * 2;
+        align-self: center;
+        border-color: $color-primary;
+        border-style: solid;
+        border-width: $default-spacing / 4;
+    }
+}

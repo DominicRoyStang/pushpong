@@ -1,12 +1,14 @@
 import React from "react";
-import {Header} from "components/"
+import {Game, Header} from "components/"
 import "./Game.css";
 
 const GameLayout = () => (
     <React.Fragment>
         <Header />
-        <div className="game">
-            <h1>Game</h1>
+        <div className="game-page">
+            <div className="game">
+                <Game />
+            </div>
         </div>
     </React.Fragment>
 );

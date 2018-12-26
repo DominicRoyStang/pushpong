@@ -2,9 +2,9 @@ import React from "react";
 import HeaderLayout from "./HeaderLayout";
 
 const Header = () => (
-    <div>
+    <React.Fragment>
         <HeaderLayout />
-    </div>
+    </React.Fragment>
 );
 
 export default Header;
