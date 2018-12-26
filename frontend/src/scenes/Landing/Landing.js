@@ -1,8 +1,13 @@
 import React from "react";
+import history from "utils/history";
 import LandingLayout from "./LandingLayout";
 
-const Landing = () => (
-    <LandingLayout />
-);
+export default class Landing extends React.Component {
+    onClick = () => {history.push("/game")};
 
-export default Landing;
+    render() {
+        return (
+            <LandingLayout onClick={this.onClick} />
+        )
+    }
+}

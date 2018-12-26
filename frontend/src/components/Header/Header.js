@@ -1,10 +1,18 @@
 import React from "react";
+import history from "utils/history";
 import HeaderLayout from "./HeaderLayout";
 
-const Header = () => (
-    <React.Fragment>
-        <HeaderLayout />
-    </React.Fragment>
-);
+export default class Header extends React.Component {
 
-export default Header;
+    onLogoClick = () => {history.push("/")};
+
+    render() {
+        return (
+            <React.Fragment>
+                <HeaderLayout 
+                    onLogoClick={this.onLogoClick}
+                />
+            </React.Fragment>
+        )
+    }
+}

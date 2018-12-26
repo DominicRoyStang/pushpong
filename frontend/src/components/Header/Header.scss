@@ -8,9 +8,13 @@
     align-items: center;
 
     .app-logo {
+        cursor: pointer;
         height: $default-spacing * 3;
         padding: 0 $default-spacing;
     }
 
-
+    .header-title {
+        color: black;
+        cursor: pointer;
+    }
 }
