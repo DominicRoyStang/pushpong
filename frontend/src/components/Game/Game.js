@@ -1,6 +1,8 @@
-import React from 'react';
-import {Engine, Render, World, Bodies} from 'matter-js'
-import './Game.css';
+import React from "react";
+import io from "socket.io-client";
+import {Engine, Render, World, Bodies} from "matter-js";
+import {BACKEND_URL} from "config";
+import "./Game.css";
 
 export default class Game extends React.Component {
 
@@ -23,6 +25,9 @@ export default class Game extends React.Component {
         this.createWorld();
 
         this.run();
+
+        this.socket = io.connect(BACKEND_URL);
+        console.log(BACKEND_URL);
     }
 
     createWorld() {
@@ -31,8 +36,8 @@ export default class Game extends React.Component {
         let boxB = Bodies.rectangle(450, 50, 80, 80);
         let boxC = Bodies.rectangle(350, 100, 50, 50, {
             render: {
-                fillStyle: 'white',
-                strokeStyle: 'blue',
+                fillStyle: "white",
+                strokeStyle: "blue",
                 lineWidth: 3,
             }
         });
