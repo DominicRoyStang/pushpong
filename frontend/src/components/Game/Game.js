@@ -1,68 +1,66 @@
 import React from 'react';
-import Matter from 'matter-js'
+import {Engine, Render, World, Bodies} from 'matter-js'
 import './Game.css';
 
-
-
-
-
-class Game extends React.Component {
+export default class Game extends React.Component {
 
     async componentDidMount() {
-        // module aliases
-        var Engine = Matter.Engine,
-        Render = Matter.Render,
-        World = Matter.World,
-        Bodies = Matter.Bodies;
+        // create the engine
+        this.engine = Engine.create();
 
-        // create an engine
-        var engine = Engine.create();
-
-        // create a renderer
-        var render = Render.create({
-        element: document.getElementById("game-render"),
-        engine: engine,
-        options: {
-            background: "#ffffff",
-            height: 600,
-            width: 900,
-            wireframes: false
-        }
-        });
-
-        console.log(render);
-
-        // create two boxes and a ground
-        var boxA = Bodies.rectangle(400, 200, 80, 80);
-        var boxB = Bodies.rectangle(450, 50, 80, 80);
-        var boxC = Bodies.rectangle(400, 100, 50, 50, {
-            render: {
-                 fillStyle: 'white',
-                 strokeStyle: 'blue',
-                 lineWidth: 3
+        //create the renderer
+        this.render = Render.create({
+            element: document.getElementById("game-render"), //attaches game canvas to the div#game-render HTML element
+            engine: this.engine,
+            options: {
+                background: "#ffffff",
+                height: 600,
+                width: 900,
+                wireframes: false
             }
         });
-        var ground = Bodies.rectangle(450, 590, 910, 40, {isStatic: true});
+
+        this.createWorld();
+
+        this.run();
+    }
+
+    createWorld() {
+        // create two boxes and a ground
+        let boxA = Bodies.rectangle(400, 200, 80, 80);
+        let boxB = Bodies.rectangle(450, 50, 80, 80);
+        let boxC = Bodies.rectangle(350, 100, 50, 50, {
+            render: {
+                fillStyle: 'white',
+                strokeStyle: 'blue',
+                lineWidth: 3,
+            }
+        });
+        boxA.restitution = 0.9;
+        boxB.restitution = 0.9;
+        boxC.restitution = 0.9;
+        console.log(boxC)
+        let ground = Bodies.rectangle(450, 590, 910, 40, {isStatic: true});
 
         // add all of the bodies to the world
-        World.add(engine.world, [boxA, boxB, boxC, ground]);
+        World.add(this.engine.world, [boxA, boxB, boxC, ground]);
+    }
 
+    run() {
         // run the engine
-        Engine.run(engine);
+        Engine.run(this.engine);
 
         // run the renderer
-        Render.run(render)
+        Render.run(this.render)
     }
 
     render() {
     return (
       <div id="game-render">
           {
-              //game will be rendered here.
+              //game will be rendered here when the component mounts.
           }
       </div>
     );
   }
 }
-
-export default Game;

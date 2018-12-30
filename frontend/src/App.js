@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Redirect, Route, Router, Switch} from "react-router-dom";
+import {Route, Router, Switch} from "react-router-dom";
 import history from "utils/history";
 import {Game, Landing} from "./scenes"
 import "./App.css";
