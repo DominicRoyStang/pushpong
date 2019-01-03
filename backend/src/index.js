@@ -10,11 +10,16 @@ const main = () => {
 
     // socket stuff - to be moved
     const socketIO = require("socket.io");
-    const io = socketIO(server);
+    const options = {
+        origins: "*:*",
+        path: "/game-socket"
+    };
+    const io = socketIO(server, options);
 
     io.on("connection", (socket) => {
-        console.log("connection!!!");
-        console.log(socket);
+        console.log(`connection !!! id: ${socket.id}`);
+
+        socket.on("mouse", (data) => console.log(data));
     });
 }
 
