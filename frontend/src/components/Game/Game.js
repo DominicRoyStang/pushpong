@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import io from "socket.io-client";
 import {Bodies, Body, Engine, Events, Render, World} from "matter-js";
 import {BACKEND_URL} from "config";
@@ -10,12 +11,11 @@ export default class Game extends React.Component {
     constructor() {
         super();
         this.controls = new Controls();
+        this.engine = Engine.create();
+        this.createWorld();
     }
 
     componentDidMount() {
-        // create the engine
-        this.engine = Engine.create();
-
         //create the renderer
         this.render = Render.create({
             element: document.getElementById("game-render"), //attaches game canvas to the div#game-render HTML element
@@ -27,8 +27,8 @@ export default class Game extends React.Component {
                 wireframes: false
             }
         });
-
-        this.createWorld();
+        //autofocus on the renderer
+        document.getElementById("game-render").focus();
 
         this.run();
 
