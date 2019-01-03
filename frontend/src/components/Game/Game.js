@@ -1,12 +1,18 @@
 import React from "react";
 import io from "socket.io-client";
-import {Engine, Render, World, Bodies} from "matter-js";
+import {Bodies, Body, Engine, Events, Render, World} from "matter-js";
 import {BACKEND_URL} from "config";
+import Controls from "./controls";
 import "./Game.css";
 
 export default class Game extends React.Component {
 
-    async componentDidMount() {
+    constructor() {
+        super();
+        this.controls = new Controls();
+    }
+
+    componentDidMount() {
         // create the engine
         this.engine = Engine.create();
 
@@ -26,8 +32,7 @@ export default class Game extends React.Component {
 
         this.run();
 
-        this.socket = io.connect(BACKEND_URL);
-        console.log(BACKEND_URL);
+        this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
     }
 
     createWorld() {
@@ -44,8 +49,16 @@ export default class Game extends React.Component {
         boxA.restitution = 0.9;
         boxB.restitution = 0.9;
         boxC.restitution = 0.9;
-        console.log(boxC)
+
         let ground = Bodies.rectangle(450, 590, 910, 40, {isStatic: true});
+
+        Events.on(this.engine, "beforeUpdate", (event) => {
+            // react to key commands and apply force as needed
+            if(this.controls.UP){
+                let force = (-0.003 * boxC.mass);
+                Body.applyForce(boxC, boxC.position,{x: 0, y: force});
+            }
+        });
 
         // add all of the bodies to the world
         World.add(this.engine.world, [boxA, boxB, boxC, ground]);
@@ -60,12 +73,12 @@ export default class Game extends React.Component {
     }
 
     render() {
-    return (
-      <div id="game-render">
-          {
-              //game will be rendered here when the component mounts.
-          }
-      </div>
-    );
-  }
+        return (
+        <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp}>
+            {
+                //game will be rendered here when the component mounts.
+            }
+        </div>
+        );
+    }
 }
