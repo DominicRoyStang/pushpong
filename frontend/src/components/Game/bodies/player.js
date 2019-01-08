@@ -1,4 +1,4 @@
-import {Bodies, Body, Composite, Constraint} from "matter-js";
+import {Bodies, Composite, Constraint} from "matter-js";
 
 const player = (number) => {
     let color = "green";
@@ -13,13 +13,13 @@ const player = (number) => {
         x = 500;
     }
 
-    const group = Body.nextGroup(true);
+    console.log(color);
 
-    const player = Composite.create({label: 'Player'});
+    const player = Composite.create({label: 'player'});
 
     const spine = Bodies.rectangle(x, y, 10, 128, {
-        label: "spine",
-        density: 0.0002
+        density: 0.0002,
+        label: "spine"
     });
 
     // Note: bumper is rotated 90 degrees so height is what appears as width in-game
@@ -30,69 +30,36 @@ const player = (number) => {
             radius: [0, 15, 15, 0]
         },
         density: 0.00002,
-        friction: 0.8
+        friction: 0.8,
+        label: "bumper"
     });
 
-    const axelA1 = Constraint.create({
-        bodyA: bumper,
-        bodyB: spine,
-        length: 10 + bumperHeight/2,
-        pointA: {x: 0, y: 40},
-        pointB: {x: 0, y: 35},
-        render: {
-            strokeStyle: "black",
-            type: "line"
-        },
-        stiffness: 0.8
-    });
-
-    const axelA2 = Constraint.create({
-        bodyA: bumper,
-        bodyB: spine,
-        length: 10 + bumperHeight/2,
-        pointA: {x: 0, y: 30},
-        pointB: {x: 0, y: 35},
-        render: {
-            strokeStyle: "black",
-            type: "line"
-        },
-        stiffness: 0.8
-    });
-
-    const axelB1 = Constraint.create({
-        bodyA: bumper,
-        bodyB: spine,
-        length: 10 + bumperHeight/2,
-        pointA: {x: 0, y: -40},
-        pointB: {x: 0, y: -35},
-        render: {
-            strokeStyle: "black",
-            type: "line"
-        },
-        stiffness: 0.8
-    });
-
-    const axelB2 = Constraint.create({
-        bodyA: bumper,
-        bodyB: spine,
-        length: 10 + bumperHeight/2,
-        pointA: {x: 0, y: -30},
-        pointB: {x: 0, y: -35},
-        render: {
-            strokeStyle: "black",
-            type: "line"
-        },
-        stiffness: 0.8
-    });
+    const springA1 = createSpring(spine, bumper, 35, 40);
+    const springA2 = createSpring(spine, bumper, 35, 30);
+    const springB1 = createSpring(spine, bumper, -35, -40); 
+    const springB2 = createSpring(spine, bumper, -35, -30);
 
     Composite.addBody(player, spine);
     Composite.addBody(player, bumper);
-    Composite.addConstraint(player, axelA1);
-    Composite.addConstraint(player, axelA2);
-    Composite.addConstraint(player, axelB1);
-    Composite.addConstraint(player, axelB2);
+    Composite.addConstraint(player, springA1);
+    Composite.addConstraint(player, springA2);
+    Composite.addConstraint(player, springB1);
+    Composite.addConstraint(player, springB2);
 
     return player;
 }
+
+const createSpring = (bodyA, bodyB, yA, yB) => Constraint.create({
+    bodyA: bodyA,
+    bodyB: bodyB,
+    length: 10 + 20/2,
+    pointA: {x: 0, y: yA},
+    pointB: {x: 0, y: yB},
+    render: {
+        strokeStyle: "black",
+        type: "line"
+    },
+    stiffness: 0.8
+});
 
 export default player;
