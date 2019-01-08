@@ -18,9 +18,10 @@ const player = (number) => {
     const player = Composite.create({label: 'player'});
 
     const spine = Bodies.rectangle(x, y, 10, 128, {
-        density: 0.0002,
-        label: "spine"
+        label: "spine",
+        density: 0.1
     });
+    console.log(spine.density);
 
     // Note: bumper is rotated 90 degrees so height is what appears as width in-game
     const bumperHeight = 20
@@ -29,13 +30,11 @@ const player = (number) => {
         chamfer: {
             radius: [0, 15, 15, 0]
         },
-        density: 0.00002,
-        friction: 0.8,
         label: "bumper"
     });
 
-    const springA1 = createSpring(spine, bumper, 35, 40);
-    const springA2 = createSpring(spine, bumper, 35, 30);
+    const springA1 = createSpring(spine, bumper, 35, 30);
+    const springA2 = createSpring(spine, bumper, 35, 40);
     const springB1 = createSpring(spine, bumper, -35, -40); 
     const springB2 = createSpring(spine, bumper, -35, -30);
 
@@ -59,7 +58,7 @@ const createSpring = (bodyA, bodyB, yA, yB) => Constraint.create({
         strokeStyle: "black",
         type: "line"
     },
-    stiffness: 0.8
+    stiffness: 0.05
 });
 
 export default player;
