@@ -1,6 +1,7 @@
 const app = require("./app");
 const {normalizePort, onError, onListening} = require("utils/server");
 
+
 const main = () => {
     const port = normalizePort(process.env.PORT || 5000);
 
@@ -19,8 +20,12 @@ const main = () => {
     io.on("connection", (socket) => {
         console.log(`connection !!! id: ${socket.id}`);
 
-        socket.on("mouse", (data) => console.log(data));
+        socket.on("control", (data) => {
+            console.log(data);
+        });
     });
 }
+
+
 
 main();
