@@ -1,44 +1,37 @@
 import {Bodies, Composite, Constraint} from "matter-js";
+import {boundSpacing, canvasHeight} from "../utils/dimensions"; 
 
-const player = (number) => {
-    let color = "green";
-    let y = 100;
-    let x = 0;
+/*
+ * By default, a player is horizontal, with the bumper facing upwards
+ */
+const player = (x, y) => {
 
-    if (number === 0) {
-        color = "blue";
-        x = 200;
-    } else if (number === 1) {
-        color = "red";
-        x = 500;
-    }
-
-    console.log(color);
-
+    // size constants
     const player = Composite.create({label: 'player'});
+    const width = canvasHeight/5;
+    const paddleHeight = boundSpacing;
+    const bumperHeight = paddleHeight*2;
+    const springLength = paddleHeight + bumperHeight/2;
 
-    const spine = Bodies.rectangle(x, y, 10, 128, {
-        label: "spine",
-        density: 0.1
+    const paddle = Bodies.rectangle(x, y, width, paddleHeight, {
+        density: 0.1,
+        label: "paddle"
     });
-    console.log(spine.density);
 
     // Note: bumper is rotated 90 degrees so height is what appears as width in-game
-    const bumperHeight = 20
-    const bumper = Bodies.trapezoid(x + bumperHeight, y, 128, bumperHeight, 0.1, {
-        angle: Math.PI / 2,
+    const bumper = Bodies.trapezoid(x, y-springLength, width, bumperHeight, 0.1, {
         chamfer: {
             radius: [0, 15, 15, 0]
         },
         label: "bumper"
     });
 
-    const springA1 = createSpring(spine, bumper, 35, 30);
-    const springA2 = createSpring(spine, bumper, 35, 40);
-    const springB1 = createSpring(spine, bumper, -35, -40); 
-    const springB2 = createSpring(spine, bumper, -35, -30);
+    const springA1 = createSpring(paddle, bumper, 35, 30, springLength);
+    const springA2 = createSpring(paddle, bumper, 35, 40, springLength);
+    const springB1 = createSpring(paddle, bumper, -35, -40, springLength); 
+    const springB2 = createSpring(paddle, bumper, -35, -30, springLength);
 
-    Composite.addBody(player, spine);
+    Composite.addBody(player, paddle);
     Composite.addBody(player, bumper);
     Composite.addConstraint(player, springA1);
     Composite.addConstraint(player, springA2);
@@ -48,12 +41,12 @@ const player = (number) => {
     return player;
 }
 
-const createSpring = (bodyA, bodyB, yA, yB) => Constraint.create({
+const createSpring = (bodyA, bodyB, xA, xB, length) => Constraint.create({
     bodyA: bodyA,
     bodyB: bodyB,
-    length: 10 + 20/2,
-    pointA: {x: 0, y: yA},
-    pointB: {x: 0, y: yB},
+    length: length,
+    pointA: {x: xA, y: 0},
+    pointB: {x: xB, y: 0},
     render: {
         strokeStyle: "black",
         type: "line"
