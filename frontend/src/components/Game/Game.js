@@ -83,7 +83,10 @@ export default class Game extends React.Component {
                 let paddle = this.player.bodies[0];
                 let bumper = this.player.bodies[1];
                 let force = (0.001 * paddle.mass);
-                Body.applyForce(bumper, bumper.position, {x: force, y: 0})
+                let forceAngle = paddle.angle - Math.PI/2;
+                let xForce = Math.cos(forceAngle) * force;
+                let yForce = Math.sin(forceAngle) * force; 
+                Body.applyForce(bumper, bumper.position, {x: xForce, y: yForce})
             }
         });
 
