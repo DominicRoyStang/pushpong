@@ -1,5 +1,6 @@
 import {Bodies, Composite, Constraint} from "matter-js";
 import {paddleBoundSpacing, canvasHeight} from "../utils/dimensions";
+import filters from "../utils/filters";
 
 /*
  * By default, a player is horizontal, with the bumper facing upwards
@@ -15,8 +16,8 @@ const player = (x, y) => {
 
     const paddle = Bodies.rectangle(x, y, width, paddleHeight, {
         collisionFilter: {
-            category: 0x0004,
-            mask: 0x0001 | 0x0002
+            category: filters.paddles,
+            mask: filters.defaultFilter | filters.invisible
         },
         density: 0.1,
         label: "paddle"
