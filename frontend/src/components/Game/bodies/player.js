@@ -1,5 +1,5 @@
 import {Bodies, Composite, Constraint} from "matter-js";
-import {boundSpacing, canvasHeight} from "../utils/dimensions"; 
+import {paddleBoundSpacing, canvasHeight} from "../utils/dimensions";
 
 /*
  * By default, a player is horizontal, with the bumper facing upwards
@@ -9,11 +9,15 @@ const player = (x, y) => {
     // size constants
     const player = Composite.create({label: 'player'});
     const width = canvasHeight/5;
-    const paddleHeight = boundSpacing;
+    const paddleHeight = paddleBoundSpacing;
     const bumperHeight = paddleHeight*2;
     const springLength = paddleHeight + bumperHeight/2;
 
     const paddle = Bodies.rectangle(x, y, width, paddleHeight, {
+        collisionFilter: {
+            category: 0x0004,
+            mask: 0x0001 | 0x0002
+        },
         density: 0.1,
         label: "paddle"
     });

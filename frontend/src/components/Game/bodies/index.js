@@ -1,5 +1,7 @@
-import player from "./player";
+import Player from "./player";
+import PaddleBoundPair from "./paddleBound";
 
 export {
-    player
+    Player,
+    PaddleBoundPair
 };
