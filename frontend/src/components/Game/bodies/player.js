@@ -28,7 +28,8 @@ const player = (x, y) => {
         chamfer: {
             radius: [0, 15, 15, 0]
         },
-        label: "bumper"
+        label: "bumper",
+        restitution: 1
     });
 
     const springA1 = createSpring(paddle, bumper, 35, 30, springLength);

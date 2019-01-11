@@ -51,9 +51,12 @@ export default class Game extends React.Component {
         this.engine.world.gravity.y = 0;
 
         // create two boxes and a ground
+        let ball = Bodies.circle(60, canvasHeight/2, 10, {
+            friction: 0,
+            frictionAir: 0
+        });
         let boxA = Bodies.rectangle(400, 200, 80, 80);
-        let boxB = Bodies.rectangle(450, 50, 80, 80);
-        let boxC = Bodies.rectangle(350, 100, 50, 50, {
+        let boxB = Bodies.rectangle(350, 100, 50, 50, {
             render: {
                 fillStyle: "white",
                 strokeStyle: "blue",
@@ -62,7 +65,6 @@ export default class Game extends React.Component {
         });
         boxA.restitution = 0.9;
         boxB.restitution = 0.9;
-        boxC.restitution = 0.9;
 
         // create thick borders, but ensure only 10px of thickness are visible
         const ceiling = Bodies.rectangle(canvasWidth/2, 0, canvasWidth + boundWidth, boundWidth, {isStatic: true});
@@ -95,7 +97,7 @@ export default class Game extends React.Component {
         });
 
         // add all of the bodies to the world
-        World.add(this.engine.world, [this.player, this.opponent, player1Bounds, player2Bounds, boxA, boxB, boxC, ceiling, ground]);
+        World.add(this.engine.world, [this.player, this.opponent, player1Bounds, player2Bounds, ball, boxA, boxB, ceiling, ground]);
     }
 
     run() {
