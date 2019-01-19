@@ -15,12 +15,8 @@ steps:
       name: "gcr.io/cloud-builders/docker"
       args: ["push", "gcr.io/push-pong/pushpong_backend"]
 
-    - id: "Deploy frontend"
+    - id: "Deploy frontend & backend"
       name: "gcr.io/cloud-builders/gcloud"
-      args: ["app", "deploy", "./frontend"]
-    
-    - id: "Deploy backend"
-      name: "gcr.io/cloud-builders/gcloud"
-      args: ["app", "deploy", "./backend"]
+      args: ["app", "deploy", "./frontend", "./backend"]
 
 timeout: 1800s
