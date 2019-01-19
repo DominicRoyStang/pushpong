@@ -3,14 +3,16 @@ steps:
       name: "gcr.io/cloud-builders/docker"
       args: ["build", "-t", "gcr.io/$PROJECT_ID/pushpong_frontend", "."]
     
-    - id: "Build backend"
-      name: "gcr.io/cloud-builders/docker"
-      args: ["build", "-t", "gcr.io/$PROJECT_ID/pushpong_backend", "."]
+#    - id: "Build backend"
+#      name: "gcr.io/cloud-builders/docker"
+#      args: ["build", "-t", "gcr.io/$PROJECT_ID/pushpong_backend", "."]
+#
+#    - id: "Push up built frontend image"
+#      name: "gcr.io/cloud-builders/docker"
+#      args: ["push", "gcr.io/push-pong/pushpong_frontend"]
+#    
+#    - id: "Push up built backend image"
+#      name: "gcr.io/cloud-builders/docker"
+#      args: ["push", "gcr.io/push-pong/pushpong_backend"]
 
-    - id: "Push up built frontend image"
-      name: "gcr.io/cloud-builders/docker"
-      args: ["push", "gcr.io/push-pong/pushpong_frontend"]
-    
-    - id: "Push up built backend image"
-      name: "gcr.io/cloud-builders/docker"
-      args: ["push", "gcr.io/push-pong/pushpong_backend"]
+timeout: 1800s
