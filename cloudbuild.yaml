@@ -18,5 +18,9 @@ steps:
     - id: "Deploy frontend"
       name: "gcr.io/cloud-builders/gcloud"
       args: ["app", "deploy", "./frontend"]
+    
+    - id: "Deploy backend"
+      name: "gcr.io/cloud-builders/gcloud"
+      args: ["app", "deploy", "./backend"]
 
 timeout: 1800s
