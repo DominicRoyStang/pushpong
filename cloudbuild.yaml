@@ -1,6 +1,6 @@
 steps:
     # Build frontend
-    - name: "gcr.io/cloud-builders/docker"
+    - name: "gcr.io/push-pong/pushpong_frontend"
       args: ["build", "-t", "gcr.io/push-pong/pushpong_frontend", "."]
     
     # Build backend
