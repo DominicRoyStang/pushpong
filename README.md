@@ -6,8 +6,8 @@ Try it out now at  [pushpong.xyz](http://www.pushpong.xyz)
 - A modern web browser
 
 # Dev Requirements
-- Linux-based operating system
-- NodeJs 10
+- Docker
+- Docker-compose
 
-# First time set up
-From the root of this repository, run the following command: `cd frontend && npm i && cd ../backend && npm i`
+# Run the code
+`docker-compose --file docker-compose.yaml up --build`

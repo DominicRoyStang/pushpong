@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+    frontend:
+        image: pushpong_frontend:latest
+        build:
+            context: ./frontend
+            args:
+                app_env: dev
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./frontend:/frontend
+            - frontend-deps:/frontend/node_modules
+
+    backend:
+        image: pushpong_backend:latest
+        command: npm start
+        ports:
+            - "5000:5000"
+        volumes:
+            - ./backend/:/backend
+            - backend-deps:/backend/node_modules
+
+volumes:
+    frontend-deps:
+    backend-deps:
