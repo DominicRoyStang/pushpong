@@ -1,11 +1,11 @@
 steps:
     - id: "Build frontend"
       name: "gcr.io/cloud-builders/docker"
-      args: [build", "-t", "gcr.io/push-pong/pushpong_frontend", "."]
+      args: [build", "-t", "gcr.io/$PROJECT_ID/pushpong_frontend", "."]
     
-    - id: Build backend
+    - id: "Build backend"
       name: "gcr.io/cloud-builders/docker"
-      args: ["build", "-t", "gcr.io/push-pong/pushpong_backend", "."]
+      args: ["build", "-t", "gcr.io/$PROJECT_ID/pushpong_backend", "."]
 
     - id: "Push up built frontend image"
       name: "gcr.io/cloud-builders/docker"
