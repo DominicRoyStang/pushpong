@@ -6,7 +6,7 @@ const HeaderLayout = ({onLogoClick}) => (
     <header className="header">
         <img src={logo} className="app-logo" alt="logo" onClick={onLogoClick} />
         <h1 className="header-title" onClick={onLogoClick}>
-            <strong>Socket Physics</strong>
+            <strong>Push Pong</strong>
         </h1>
     </header>
 );

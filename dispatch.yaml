@@ -1,0 +1,5 @@
+dispatch:
+    - url: "backend.pushpong.xyz/*"
+      service: backend
+
+  
