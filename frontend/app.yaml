@@ -1,5 +1,6 @@
 runtime: custom
 env: flex
 service: frontend
-secure: always
-redirect_http_response_code: 301
+- url: .*
+  secure: always
+  redirect_http_response_code: 301
