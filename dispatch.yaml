@@ -1,6 +1,12 @@
 dispatch:
+    - url: "www.pushpong.xyz/*"
+      service: frontend
+
+    - url: "pushpong.xyz/*"
+      service: frontend
+
     - url: "www.backend.pushpong.xyz/*"
       service: backend
 
-    - url: "www.pushpong.xyz/*"
-      service: frontend
+    - url: "backend.pushpong.xyz/*"
+      service: backend
