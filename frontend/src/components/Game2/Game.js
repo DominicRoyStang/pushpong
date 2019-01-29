@@ -1,6 +1,5 @@
 import React from "react";
 import {BACKEND_URL} from "config";
-import p2 from "p2";
 import {Body, Circle, World} from "p2";
 import P5 from "p5";
 
