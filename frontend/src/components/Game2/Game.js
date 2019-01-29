@@ -8,15 +8,17 @@ export default class Game extends React.Component {
 
     componentDidMount() {
         //console.log(p2);
-        let world = new World();
-        //console.log(world);
+        let world = new World({
+            //gravity: [0, 0]
+        });
+        console.log(world);
 
         // Create circle bodies
-        var shape = new Circle({ radius: 0.5 });
-        var body = new Body({
+        let shape = new Circle({ radius: 10 });
+        let body = new Body({
             mass: 1,
-            position: [-11, 100],
-            velocity: [1,0], // 100,0
+            position: [450, 300],
+            //velocity: [1,0], // 100,0
             ccdSpeedThreshold: 0 // -1
         });
         body.addShape(shape);
@@ -34,49 +36,30 @@ export default class Game extends React.Component {
                 p.background(255);
                 p.fill(0);
                 [x, y] = body.interpolatedPosition;
-                p.rect(x, y, 50, 50);
+                //p.rect(x, y, 50, 50);
+                // have to do canvas height - y because p5 (canvas) uses top left corner as (0,0)
+                // whereas p2 (physics) uses the top right corner as (0,0)
+                p.circle(x, 600-y, 10);
             };
         };
 
         let p5 = new P5(sketch, document.getElementById("game-render"));
 
+        this.runEngine(world);
+    }
 
-
-        /* //THIS WORKS
-        var timeStep = 1/60;
-        setInterval(function(){
-            world.step(timeStep);
-            //console.log("Circle x position: " + body.position[0]);
-            //console.log("Circle y position: " + body.position[1]);
-            //console.log("Circle angle: " + body.angle);
-        }, 1000 * timeStep);
-        */
-
-        /*
-        var timeStep = 1 / 60
-        var maxSubSteps = 10
-        var lastTime; 
-        function animate(t) {
+    runEngine(world) {
+        let maxSubSteps = 10;
+        let fixedTimeStep = 1 / 60;
+        let lastTimeSeconds;
+        const animate = (t) => {
             requestAnimationFrame(animate);
-            var dt = t !== undefined && lastTime !== undefined ? t / 1000 - lastTime : 0;
-            world.step(timeStep, dt, maxSubSteps); lastTime = t / 1000;
-        }
-        */
-
-        
-        var maxSubSteps = 10;
-        var fixedTimeStep = 1 / 60;
-        var lastTimeSeconds;
-        function animate(t){
-            requestAnimationFrame(animate);
-            var timeSeconds = t / 1000;
+            const timeSeconds = t / 1000;
             lastTimeSeconds = lastTimeSeconds || timeSeconds;
-            var timeSinceLastCall = timeSeconds - lastTimeSeconds;
+            const timeSinceLastCall = timeSeconds - lastTimeSeconds;
             world.step(fixedTimeStep, timeSinceLastCall, maxSubSteps);
-            //renderBody(body.interpolatedPosition, body.interpolatedAngle);
         }
         requestAnimationFrame(animate);
-        
     }
 
     render() {
