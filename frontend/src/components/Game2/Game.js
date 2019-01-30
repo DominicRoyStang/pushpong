@@ -1,50 +1,75 @@
 import React from "react";
-import {BACKEND_URL} from "config";
-import {Body, Circle, World} from "p2";
+import io from "socket.io-client";
+import {Body, Box, Circle, World} from "p2";
 import P5 from "p5";
+import Controls from "./controls";
+import {BACKEND_URL} from "config";
+import {canvasWidth, canvasHeight, boundWidth, paddleBoundSpacing, paddleOffset} from "./utils/dimensions";
+import colors from "./utils/colors";
+import {drawCircle} from "./render";
 
 export default class Game extends React.Component {
 
-    componentDidMount() {
-        //console.log(p2);
-        let world = new World({
+    constructor() {
+        super();
+
+        this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
+        this.controls = new Controls(this.socket); //TODO: Remove dependency on socket from controls
+
+        this.world = new World({
             //gravity: [0, 0]
         });
-        console.log(world);
+
+        this.createBounds();
+    }
+
+    componentDidMount() {
 
         // Create circle bodies
-        let shape = new Circle({ radius: 10 });
-        let body = new Body({
+        const shape = new Circle({ radius: 10 }); //TODO: add ball radius to dimensions and use that
+        const ball = new Body({
             mass: 1,
             position: [450, 300],
             //velocity: [1,0], // 100,0
             ccdSpeedThreshold: 0 // -1
         });
-        body.addShape(shape);
-        world.addBody(body);
+        ball.addShape(shape);
+        this.world.addBody(ball);
 
         const sketch = (p) => { // TODO: Move sketch to its own file; import it here.
-            let x;
-            let y;
 
             p.setup = () => {
                 p.createCanvas(900, 600);
             };
 
             p.draw = () => {
-                p.background(255);
+                p.background(colors.background);
                 p.fill(0);
-                [x, y] = body.interpolatedPosition;
-                //p.rect(x, y, 50, 50);
                 // have to do canvas height - y because p5 (canvas) uses top left corner as (0,0)
                 // whereas p2 (physics) uses the top right corner as (0,0)
-                p.circle(x, 600-y, 10);
+                drawCircle(p, ball)
             };
         };
+        console.log(ball);
 
         let p5 = new P5(sketch, document.getElementById("game-render"));
 
-        this.runEngine(world);
+        this.runEngine(this.world);
+
+        console.log(this.world);
+    }
+
+    createBounds() {
+        const shape = new Box({
+            width: canvasWidth,
+            height: boundWidth
+        });
+        const floor = new Body({
+            mass: 0,
+            position: [0, 0]
+        });
+        floor.addShape(shape);
+        this.world.addBody(floor);
     }
 
     runEngine(world) {
