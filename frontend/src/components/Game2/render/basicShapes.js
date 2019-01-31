@@ -19,14 +19,24 @@ const drawCircle = (p, body, color = colors.ball) => {
  */
 const drawRectangle = (p, body, color = colors.border) => {
     const [x, y] = body.interpolatedPosition;
+    const angle = body.angle;
     const width = body.shapes[0].width;
     const height = body.shapes[0].height;
-    p.rectMode(p.CENTER);
+    p.push();
+
     p.noStroke();
     p.fill(color);
+
+    p.angleMode(p.RADIANS);
+    p.translate(x, canvasHeight - y);
+    p.rotate(angle);
+
     // have to do canvas height - y because p5 (canvas) uses top left corner as (0,0)
     // whereas p2 (physics) uses the bottom left corner as (0,0)
-    p.rect(x, canvasHeight - y, width, height);
+    p.rectMode(p.CENTER);
+    p.rect(0, 0, width, height);
+
+    p.pop();
 }
 
 export {
