@@ -4,7 +4,7 @@ import {canvasHeight} from "../utils/dimensions"
 /*
  * Takes a p5 instance and a p2 circle body, and draws it to the canvas in the desired color.
  */
-const drawCircle = (p, body, color = colors.ball) => {
+const drawCircle = (p, body, color = colors.defaultColor) => {
     const [x, y] = body.interpolatedPosition;
     const angle = body.angle;
     const radius = body.shapes[0].radius;
@@ -21,7 +21,7 @@ const drawCircle = (p, body, color = colors.ball) => {
 /*
  * Takes a p5 instance and a p2 box body, and draws it to the canvas in the desired color.
  */
-const drawRectangle = (p, body, color = colors.border) => {
+const drawRectangle = (p, body, color = colors.defaultColor) => {
     const [x, y] = body.interpolatedPosition;
     const angle = body.angle;
     const width = body.shapes[0].width;

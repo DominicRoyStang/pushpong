@@ -1,5 +1,6 @@
 import {Body, Circle} from "p2";
 import {drawCircle} from "../render";
+import colors from "../utils/colors";
 
 /* 
  * A ball is a circular dynamic body.
@@ -26,5 +27,5 @@ export default class Ball extends Body {
         this.addShape(shape);
     }
 
-    render = (p) => drawCircle(p, this);
+    render = (p) => drawCircle(p, this, colors.ball);
 }

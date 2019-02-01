@@ -1,5 +1,6 @@
 import {Body, Box} from "p2";
 import {drawRectangle} from "../render";
+import colors from "../utils/colors"
 
 /* 
  * A boundary is a rectangular static body.
@@ -26,5 +27,5 @@ export default class Boundary extends Body {
         this.addShape(shape);
     }
 
-    render = (p) => drawRectangle(p, this);
+    render = (p) => drawRectangle(p, this, colors.border);
 }

@@ -2,6 +2,7 @@
 import {Body, Box} from "p2";
 import {canvasHeight, paddleBoundSpacing} from "../utils/dimensions"
 import {drawRectangle} from "../render";
+import colors from "../utils/colors";
 
 /* 
  * A boundary is a rectangular static body.
@@ -36,5 +37,5 @@ export default class Player extends Body {
         this.addShape(shape);
     }
 
-    render = (p) => drawRectangle(p, this);
+    render = (p) => drawRectangle(p, this, colors.paddle1);
 }

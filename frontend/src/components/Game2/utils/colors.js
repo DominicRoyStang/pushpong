@@ -1,3 +1,4 @@
+const defaultColor = "#364040"
 const background = "#ffffff"
 const border = "#2e2b44"
 const paddle1 = "#ffbc42"
@@ -7,6 +8,7 @@ const bumper2 = "#d81159"
 const ball = "#006ba6"
 
 export default {
+    defaultColor,
     background,
     ball,
     border,

@@ -52,15 +52,15 @@ export default class Game extends React.Component {
 
             p.setup = () => {
                 p.createCanvas(canvasWidth, canvasHeight);
-            };
-
-            p.draw = () => {
                 p.push();
-                p.background(colors.background);
-                p.fill(0);
                 p.noStroke();
                 p.angleMode(p.RADIANS);
                 p.rectMode(p.CENTER);
+            };
+
+            p.draw = () => {
+                p.background(colors.background);
+                p.fill(colors.defaultColor);
                 for (const body of this.world.bodies) {
                     body.render(p);
                 }
