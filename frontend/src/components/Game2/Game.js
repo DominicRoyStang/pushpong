@@ -4,7 +4,7 @@ import {World} from "p2";
 import P5 from "p5";
 import Controls from "./controls";
 import {BACKEND_URL} from "config";
-import {canvasWidth, canvasHeight, boundWidth, paddleBoundSpacing, paddleOffset} from "./utils/dimensions";
+import {canvasWidth, canvasHeight, boundWidth, paddleOffset} from "./utils/dimensions";
 import colors from "./utils/colors";
 import {Boundary, Ball, Player} from "./bodies";
 
@@ -25,15 +25,15 @@ export default class Game extends React.Component {
 
         // Create walls
         const ground = new Boundary({
-            position: [canvasWidth/2, 0]
+            position: [canvasWidth/2, 0 - boundWidth/2]
         }, canvasWidth, boundWidth);
         const ceiling = new Boundary({
-            position: [canvasWidth/2, canvasHeight]
+            position: [canvasWidth/2, canvasHeight + boundWidth/2]
         }, canvasWidth, boundWidth);
         
         // Create players
         const player1 = new Player({
-            position: [100, canvasHeight/2]
+            position: [paddleOffset, canvasHeight/2]
         });
 
         console.log(player1);
@@ -55,8 +55,12 @@ export default class Game extends React.Component {
             };
 
             p.draw = () => {
+                p.push();
                 p.background(colors.background);
                 p.fill(0);
+                p.noStroke();
+                p.angleMode(p.RADIANS);
+                p.rectMode(p.CENTER);
                 for (const body of this.world.bodies) {
                     body.render(p);
                 }
@@ -68,9 +72,6 @@ export default class Game extends React.Component {
         document.getElementById("game-render").focus();
 
         this.runEngine(this.world);
-
-        //console.log(this.world);
-
 
         // Update the character controller after each physics tick.
         this.world.on('postStep', () => {

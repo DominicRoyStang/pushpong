@@ -6,12 +6,16 @@ import {canvasHeight} from "../utils/dimensions"
  */
 const drawCircle = (p, body, color = colors.ball) => {
     const [x, y] = body.interpolatedPosition;
+    const angle = body.angle;
     const radius = body.shapes[0].radius;
-    p.noStroke();
+    p.push();
     p.fill(color);
+    p.translate(x, canvasHeight - y);
+    p.rotate(angle);
     // have to do canvas height - y because p5 (canvas) uses top left corner as (0,0)
     // whereas p2 (physics) uses the bottom left corner as (0,0)
-    p.circle(x, canvasHeight - y, radius);
+    p.circle(0, 0, radius);
+    p.pop();
 };
 
 /*
@@ -23,19 +27,12 @@ const drawRectangle = (p, body, color = colors.border) => {
     const width = body.shapes[0].width;
     const height = body.shapes[0].height;
     p.push();
-
-    p.noStroke();
     p.fill(color);
-
-    p.angleMode(p.RADIANS);
     p.translate(x, canvasHeight - y);
     p.rotate(angle);
-
     // have to do canvas height - y because p5 (canvas) uses top left corner as (0,0)
     // whereas p2 (physics) uses the bottom left corner as (0,0)
-    p.rectMode(p.CENTER);
     p.rect(0, 0, width, height);
-
     p.pop();
 }
 
