@@ -3,7 +3,7 @@ import {canvasHeight, paddleHeight} from "../utils/dimensions"
 import {drawRectangle} from "../render";
 import colors from "../utils/colors";
 
-/* 
+/*
  * A player is composed of a rectangular paddle and a bumper connected by springs.
  */
 export default class Player {
@@ -11,9 +11,9 @@ export default class Player {
         this.paddle = new Paddle({
             position: [x, y]
         });
-        
+
         this.springLength = paddleHeight*2;
-        
+
         this.bumper = new Bumper({
             position: [x + this.springLength, y]
         });
@@ -31,6 +31,10 @@ export default class Player {
         this.springs = [spring1, spring2];
 
         const distanceConstraint = new PaddleBumperDistanceConstraint(this.paddle, this.bumper, {
+            upperLimitEnabled: true,
+            lowerLimitEnabled: true,
+            upperLimit: this.springLength*2,
+            lowerLimit: this.springLength
         });
         this.constraints = [distanceConstraint];
     }
@@ -45,10 +49,6 @@ export default class Player {
         }
         for (const constraint1 of this.constraints) {
             world.addConstraint(constraint1);
-            constraint1.upperLimitEnabled = true;
-            constraint1.lowerLimitEnabled = true;
-            constraint1.upperLimit = this.springLength*2;
-            constraint1.lowerLimit = this.springLength;
         }
     }
 }
@@ -117,9 +117,9 @@ class PlayerSpring extends LinearSpring {
     constructor(paddle, bumper, props) {
         // set defaults if not specified in props
         props = Object.assign({
-            stiffness: 3, //0.05
+            stiffness: 3,
             restLength: 10,
-            damping : 0.5, //0
+            damping : 0.5,
             localAnchorA: [0, 0],
             localAnchorB: [0, 0]
         }, props);
@@ -136,12 +136,23 @@ class PaddleBumperDistanceConstraint extends DistanceConstraint {
     constructor(paddle, bumper, props) {
         // set defaults if not specified in props
         props = Object.assign({
+            upperLimitEnabled: true,
+            lowerLimitEnabled: true,
+            upperLimit: 100,
+            lowerlimit: 0,
             localAnchorA: [0, 0],
             localAnchorB: [0, 0]
         }, props);
 
         // call parent constructor
         super(paddle, bumper, props);
+
+        // Fix upper and lowerlimit props not being applied
+        // Opened pull request: https://github.com/schteppe/p2.js/pull/341
+        this.upperLimitEnabled = props.upperLimitEnabled;
+        this.lowerLimitEnabled = props.lowerLimitEnabled;
+        this.lowerLimit = props.lowerLimit;
+        this.upperLimit = props.upperLimit;
     }
 }
 
