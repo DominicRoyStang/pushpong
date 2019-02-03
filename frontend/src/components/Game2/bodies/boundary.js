@@ -5,7 +5,6 @@ import colors from "../utils/colors"
 /* 
  * A boundary is a rectangular static body.
  */
-
 export default class Boundary extends Body {
     
     constructor(props, width, height) {

@@ -30,24 +30,23 @@ export default class Game extends React.Component {
         const ceiling = new Boundary({
             position: [canvasWidth/2, canvasHeight + boundWidth/2]
         }, canvasWidth, boundWidth);
-        
-        // Create players
-        const player1 = new Player({
-            position: [paddleOffset, canvasHeight/2]
-        });
-
-        console.log(player1);
 
         // Create ball
         const ball = new Ball({
-            position: [450, canvasHeight/2]
+            position: [paddleOffset*9, canvasHeight/2]
         });
-
+        
+        // Add bodies to world
         this.world.addBody(ground);
         this.world.addBody(ceiling);
-        this.world.addBody(player1);
         this.world.addBody(ball);
-
+        
+        // Create players
+        const player1 = new Player(paddleOffset*4, canvasHeight/2);
+        
+        // Add player composites to world
+        player1.addToWorld(this.world);
+        
         const sketch = (p) => { // TODO: Move sketch to its own file; import it here.
 
             p.setup = () => {
@@ -67,7 +66,7 @@ export default class Game extends React.Component {
             };
         };
 
-        let p5 = new P5(sketch, document.getElementById("game-render"));
+        new P5(sketch, document.getElementById("game-render"));
         // autofocus on the renderer
         document.getElementById("game-render").focus();
 
@@ -76,18 +75,23 @@ export default class Game extends React.Component {
         // Update the character controller after each physics tick.
         this.world.on('postStep', () => {
             if (this.controls.UP) {
-                player1.velocity[1] = 30;
+                player1.paddle.velocity[1] = 30;
+                player1.bumper.velocity[1] = 30;
             } else if (this.controls.DOWN) {
-                player1.velocity[1] = -30;
+                player1.paddle.velocity[1] = -30;
+                player1.bumper.velocity[1] = -30;
             } else {
-                player1.velocity[1] = 0;
+                player1.paddle.velocity[1] = 0;
+                player1.bumper.velocity[1] = 0;
             }
             if (this.controls.BOOST) {
-                console.log("BOOST");
+                const force = (128 * player1.bumper.mass);
+                const forceAngle = player1.paddle.angle + Math.PI/2;
+                const xForce = Math.cos(forceAngle) * force;
+                const yForce = Math.sin(forceAngle) * force;
+                player1.bumper.applyForce([xForce, yForce]);
             }
-            //player1.applyForce([5,5]);
         });
-        console.log(this.controls);
     }
 
     runEngine(world) {
