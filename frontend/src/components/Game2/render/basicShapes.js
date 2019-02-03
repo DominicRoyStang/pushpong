@@ -6,7 +6,7 @@ import {canvasHeight} from "../utils/dimensions"
  */
 const drawCircle = (p, body, color = colors.defaultColor) => {
     const [x, y] = body.interpolatedPosition;
-    const angle = body.angle;
+    const angle = body.interpolatedAngle;
     const radius = body.shapes[0].radius;
     p.push();
     p.fill(color);
@@ -23,7 +23,7 @@ const drawCircle = (p, body, color = colors.defaultColor) => {
  */
 const drawRectangle = (p, body, color = colors.defaultColor) => {
     const [x, y] = body.interpolatedPosition;
-    const angle = body.angle;
+    const angle = body.interpolatedAngle;
     const width = body.shapes[0].width;
     const height = body.shapes[0].height;
     p.push();
