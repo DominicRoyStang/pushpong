@@ -1,6 +1,9 @@
-import {drawCircle, drawRectangle} from "./basicShapes";
+import {drawCircle, drawConvex, drawRectangle} from "./basicShapes";
+import {drawLineSpring} from "./springs";
 
 export {
     drawCircle,
+    drawConvex,
     drawRectangle,
+    drawLineSpring,
 };
