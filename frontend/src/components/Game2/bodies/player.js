@@ -1,35 +1,45 @@
 import {Body, Box, LinearSpring, DistanceConstraint} from "p2";
 import {canvasHeight, paddleHeight} from "../utils/dimensions"
-import {drawRectangle} from "../render";
+import {drawRectangle, drawLineSpring} from "../render";
+import {TriangularBumper} from "./bumpers";
 import colors from "../utils/colors";
 
 /*
  * A player is composed of a rectangular paddle and a bumper connected by springs.
+ * The default orientation of a player is bumper facing upwards.
  */
 export default class Player {
-    constructor(x, y) {
+    constructor(x, y, angle) {
+        this.angle = angle
+        // Dimensions
+        this.springLength = paddleHeight;
+        
+        // Bodies
         this.paddle = new Paddle({
-            position: [x, y]
+            position: [x, y],
+            angle: angle
         });
 
-        this.springLength = paddleHeight*2;
-
-        this.bumper = new Bumper({
-            position: [x + this.springLength, y]
+        const [paddleX, paddleY] = this.paddle.position;
+        this.bumper = new TriangularBumper({
+            position: [paddleX + Math.sin(-angle)*this.springLength, paddleY + Math.cos(-angle)*this.springLength],
+            angle: angle
         });
 
+        // Springs
         const spring1 = new PlayerSpring(this.paddle, this.bumper, {
             localAnchorA: [35, 0],
             localAnchorB: [35, 0],
             restLength: this.springLength
         });
         const spring2 = new PlayerSpring(this.paddle, this.bumper, {
-            localAnchorA: [-30, 0],
-            localAnchorB: [-30, 0],
+            localAnchorA: [-35, 0],
+            localAnchorB: [-35, 0],
             restLength: this.springLength
         });
         this.springs = [spring1, spring2];
 
+        // Permanent Constraints
         const distanceConstraint = new PaddleBumperDistanceConstraint(this.paddle, this.bumper, {
             upperLimitEnabled: true,
             lowerLimitEnabled: true,
@@ -43,13 +53,15 @@ export default class Player {
         // add bodies
         world.addBody(this.paddle);
         world.addBody(this.bumper);
+        
         // add springs
         for (const spring of this.springs) {
             world.addSpring(spring);
         }
-        for (const constraint1 of this.constraints) {
-            world.addConstraint(constraint1);
+        for (const constraint of this.constraints) {
+            world.addConstraint(constraint);
         }
+        
     }
 }
 
@@ -60,11 +72,9 @@ class Paddle extends Body {
     constructor(props) {
         // set defaults if not specified in props
         props = Object.assign({
-            angle: -Math.PI/2,
             angularDamping: 0,
             damping: 0,
             fixedRotation: true,
-            fixedX: true,
             mass: 1
         }, props);
 
@@ -80,34 +90,6 @@ class Paddle extends Body {
     }
 
     render = (p) => drawRectangle(p, this, colors.paddle1);
-}
-
-/*
- * A bumper is the front part of a player that is used to push the ball. It is attached to a paddle via springs.
- */
-class Bumper extends Body {
-    constructor(props) {
-        // set defaults if not specified in props
-        props = Object.assign({
-            angle: -Math.PI/2,
-            angularDamping: 0,
-            damping: 0,
-            fixedRotation: true,
-            mass: 1
-        }, props);
-
-        // call parent constructor
-        super(props);
-
-        // add bumper
-        const bumper = new Box({
-            width: canvasHeight/5,
-            height: paddleHeight*2
-        });
-        this.addShape(bumper);
-    }
-
-    render = (p) => drawRectangle(p, this, colors.bumper1);
 }
 
 /*
@@ -127,10 +109,12 @@ class PlayerSpring extends LinearSpring {
         // call parent constructor
         super(paddle, bumper, props);
     }
+
+    render = (p) => drawLineSpring(p, this, colors.defaultColor);
 }
 
 /*
- * Springs with rendering
+ * Limits to how far the springs may stretch
  */
 class PaddleBumperDistanceConstraint extends DistanceConstraint {
     constructor(paddle, bumper, props) {

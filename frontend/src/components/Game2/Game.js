@@ -42,10 +42,14 @@ export default class Game extends React.Component {
         this.world.addBody(ball);
         
         // Create players
-        const player1 = new Player(paddleOffset*4, canvasHeight/2);
+        const player1 = new Player(paddleOffset*4, canvasHeight/2, -Math.PI/2);
+        const player2 = new Player(canvasWidth - paddleOffset*4, canvasHeight/2, Math.PI/2);
+        const player3 = new Player(400, 30, 0);
         
         // Add player composites to world
         player1.addToWorld(this.world);
+        player2.addToWorld(this.world);
+        player3.addToWorld(this.world);
         
         const sketch = (p) => { // TODO: Move sketch to its own file; import it here.
 
@@ -63,44 +67,60 @@ export default class Game extends React.Component {
                 for (const body of this.world.bodies) {
                     body.render(p);
                 }
+                /*
+                for (const spring of this.world.springs) {
+                    spring.render(p);
+                }
+                */
             };
         };
 
-        new P5(sketch, document.getElementById("game-render"));
-        // autofocus on the renderer
+        // Create and autofocus on renderer
+        this.p5 = new P5(sketch, document.getElementById("game-render"));
         document.getElementById("game-render").focus();
 
         this.runEngine(this.world);
 
         // Update the character controller after each physics tick.
         this.world.on('postStep', () => {
+            const paddle = player1.paddle;
+            const bumper = player1.bumper;
             if (this.controls.UP) {
-                player1.paddle.velocity[1] = 30;
-                player1.bumper.velocity[1] = 30;
+                const paddleVelocity = [-30, 0];
+                paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
+                let currentLocal = [0, 0];
+                bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
+                let desiredLocal = [-30, currentLocal[1]];
+                bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
             } else if (this.controls.DOWN) {
-                player1.paddle.velocity[1] = -30;
-                player1.bumper.velocity[1] = -30;
+                const paddleVelocity = [30, 0];
+                paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
+                let currentLocal = [0, 0];
+                bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
+                let desiredLocal = [30, currentLocal[1]];
+                bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
             } else {
-                player1.paddle.velocity[1] = 0;
-                player1.bumper.velocity[1] = 0;
+                const paddleVelocity = [0, 0];
+                paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
+                let currentLocal = [0, 0];
+                bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
+                let desiredLocal = [0, currentLocal[1]];
+                bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
             }
             if (this.controls.BOOST) {
-                const force = (128 * player1.bumper.mass);
-                const forceAngle = player1.paddle.angle + Math.PI/2;
-                const xForce = Math.cos(forceAngle) * force;
-                const yForce = Math.sin(forceAngle) * force;
-                player1.bumper.applyForce([xForce, yForce]);
+                const force = 128 * bumper.mass;
+                bumper.applyForceLocal([0, force]);
             }
         });
     }
 
     runEngine(world) {
         let maxSubSteps = 10;
-        let fixedTimeStep = 1 / 60;
+        let fixedTimeStep = 1/60;
         let lastTimeSeconds;
         const animate = (t) => {
             requestAnimationFrame(animate);
-            const timeSeconds = t / 1000;
+            const timeSeconds = t/1000;
             lastTimeSeconds = lastTimeSeconds || timeSeconds;
             const timeSinceLastCall = timeSeconds - lastTimeSeconds;
             world.step(fixedTimeStep, timeSinceLastCall, maxSubSteps);
@@ -108,9 +128,19 @@ export default class Game extends React.Component {
         requestAnimationFrame(animate);
     }
 
+    onMouseUp = (mouseEvent) => {
+        this.world.addBody(
+            new Ball({
+                position: [
+                    this.p5.mouseX,
+                    canvasHeight - this.p5.mouseY]
+            })
+        );
+    }
+
     render() {
         return (
-            <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp}>
+            <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp} onMouseUp={this.onMouseUp}>
                 {
                     //game will be rendered here when the component mounts.
                 }
