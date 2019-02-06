@@ -1,7 +1,7 @@
 import {Body, Box, LinearSpring, DistanceConstraint} from "p2";
 import {canvasHeight, paddleHeight} from "../utils/dimensions"
 import {drawRectangle, drawLineSpring} from "../render";
-import {TriangularBumper} from "./bumpers";
+import {RectangularBumper} from "./bumpers";
 import colors from "../utils/colors";
 
 /*
@@ -21,7 +21,7 @@ export default class Player {
         });
 
         const [paddleX, paddleY] = this.paddle.position;
-        this.bumper = new TriangularBumper({
+        this.bumper = new RectangularBumper({
             position: [paddleX + Math.sin(-angle)*this.springLength, paddleY + Math.cos(-angle)*this.springLength],
             angle: angle
         });
@@ -75,7 +75,7 @@ class Paddle extends Body {
             angularDamping: 0,
             damping: 0,
             fixedRotation: true,
-            mass: 1
+            mass: 1000
         }, props);
 
         // call parent constructor

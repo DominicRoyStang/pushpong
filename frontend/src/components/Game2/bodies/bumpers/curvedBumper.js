@@ -6,7 +6,7 @@ import colors from "../../utils/colors";
 /*
  * A bumper is the front part of a player that is used to push the ball. It is attached to a paddle via springs.
  */
-export default class TriangularBumper extends Body {
+export default class CurvedBumper extends Body {
     constructor(props) {
         // set defaults if not specified in props
         props = Object.assign({
@@ -25,7 +25,20 @@ export default class TriangularBumper extends Body {
         
         // add bumper
         const bumper = new Convex({
-            vertices: [[width/2, 0], [0, height], [-width/2, 0]]
+            vertices: [
+                [width/2, 0],
+                [width/2, height/3],
+                [width/2.1, height/2],
+                [width/2.3, height/1.5],
+                [width/2.7, height/1.3],
+                [width/3.5, height/1.1],
+                [width/5.1, height/1.05],
+                [width/6, height],
+                [0, height],
+                [-width/6, height],
+                [-width/2, height/3],
+                [-width/2, 0]
+            ]
         });
         this.addShape(bumper);
     }
