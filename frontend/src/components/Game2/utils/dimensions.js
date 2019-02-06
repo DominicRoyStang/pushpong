@@ -5,7 +5,7 @@ const canvasWidth = 900;
 const boundWidth = 30;
 const paddleOffset = 10;
 // player
-const paddleWidth = 10;
+const paddleWidth = canvasHeight/5;
 const paddleHeight = 10;
 
 export {
