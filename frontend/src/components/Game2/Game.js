@@ -35,7 +35,7 @@ export default class Game extends React.Component {
 
         // Create ball
         const ball = new Ball({
-            position: [paddleOffset*9, canvasHeight/2]
+            position: [paddleOffset*6, canvasHeight/2]
         });
         
         // Add bodies to world
@@ -44,7 +44,7 @@ export default class Game extends React.Component {
         this.world.addBody(ball);
         
         // Create players
-        const player1 = new Player(paddleOffset*4, canvasHeight/2, -Math.PI/2);
+        const player1 = new Player(paddleOffset, canvasHeight/2, -Math.PI/2);
         const player2 = new Player(canvasWidth - paddleOffset*4, canvasHeight/2, Math.PI/2);
         const player3 = new Player(400, 30, 0);
         
