@@ -19,6 +19,8 @@ export default class Game extends React.Component {
         this.world = new World({
             gravity: [0, 0]
         });
+
+        this.world.defaultContactMaterial.restitution = 1;
     }
 
     componentDidMount() {
@@ -67,11 +69,9 @@ export default class Game extends React.Component {
                 for (const body of this.world.bodies) {
                     body.render(p);
                 }
-                /*
                 for (const spring of this.world.springs) {
                     spring.render(p);
                 }
-                */
             };
         };
 
@@ -112,6 +112,8 @@ export default class Game extends React.Component {
                 bumper.applyForceLocal([0, force]);
             }
         });
+
+        console.log(this.world);
     }
 
     runEngine(world) {

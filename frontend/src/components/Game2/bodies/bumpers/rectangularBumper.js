@@ -27,10 +27,6 @@ export default class RectangularBumper extends Body {
         const bumper = new Convex({
             vertices: [[width/2, 0], [width/2, height], [-width/2, height], [-width/2, 0]]
         });
-        //bumper.centerOfMass[0] = width/2;
-        //bumper.centerOfMass[1] = height/2;
-        //bumper.updateArea();
-        //bumper.updateCenterOfMass();
         this.addShape(bumper);
     }
 

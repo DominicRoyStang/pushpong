@@ -23,18 +23,19 @@ export default class Player {
         const [paddleX, paddleY] = this.paddle.position;
         this.bumper = new RectangularBumper({
             position: [paddleX + Math.sin(-angle)*this.springLength, paddleY + Math.cos(-angle)*this.springLength],
-            angle: angle
+            angle: angle,
+            mass: 100
         });
 
         // Springs
         const spring1 = new PlayerSpring(this.paddle, this.bumper, {
-            localAnchorA: [35, 0],
-            localAnchorB: [35, 0],
+            localAnchorA: [35, this.paddle.shapes[0].centerOfMass[1]],
+            localAnchorB: [35, this.bumper.shapes[0].centerOfMass[1]],
             restLength: this.springLength
         });
         const spring2 = new PlayerSpring(this.paddle, this.bumper, {
-            localAnchorA: [-35, 0],
-            localAnchorB: [-35, 0],
+            localAnchorA: [-35, this.paddle.shapes[0].centerOfMass[1]],
+            localAnchorB: [-35, this.bumper.shapes[0].centerOfMass[1]],
             restLength: this.springLength
         });
         this.springs = [spring1, spring2];
@@ -99,11 +100,11 @@ class PlayerSpring extends LinearSpring {
     constructor(paddle, bumper, props) {
         // set defaults if not specified in props
         props = Object.assign({
-            stiffness: 3,
+            stiffness: 3*bumper.mass,
             restLength: 10,
             damping : 0.5,
-            localAnchorA: [0, 0],
-            localAnchorB: [0, 0]
+            localAnchorA: [-35, paddle.shapes[0].centerOfMass[1]],
+            localAnchorB: [-35, bumper.shapes[0].centerOfMass[1]]
         }, props);
 
         // call parent constructor
