@@ -3,6 +3,7 @@ import {canvasHeight, paddleHeight} from "../utils/dimensions"
 import {drawRectangle, drawLineSpring} from "../render";
 import {RectangularBumper} from "./bumpers";
 import colors from "../utils/colors";
+import {rotateAroundAnchor} from "../utils/math";
 
 /*
  * A player is composed of a rectangular paddle and a bumper connected by springs.
@@ -22,7 +23,7 @@ export default class Player {
 
         const [paddleX, paddleY] = this.paddle.position;
         this.bumper = new RectangularBumper({
-            position: [paddleX + Math.sin(-angle)*this.springLength, paddleY + Math.cos(-angle)*this.springLength],
+            position: rotateAroundAnchor(x, y, ...this.paddle.position, angle),
             angle: angle,
             mass: 100
         });
