@@ -21,7 +21,6 @@ export default class Player {
             angle: angle
         });
 
-        const [paddleX, paddleY] = this.paddle.position;
         this.bumper = new RectangularBumper({
             position: rotateAroundAnchor(x, y, ...this.paddle.position, angle),
             angle: angle,
