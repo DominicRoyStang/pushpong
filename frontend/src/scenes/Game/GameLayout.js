@@ -1,5 +1,5 @@
 import React from "react";
-import {Game2, Header} from "components/"
+import {Game, Header} from "components/"
 import "./Game.css";
 
 const GameLayout = () => (
@@ -7,7 +7,7 @@ const GameLayout = () => (
         <Header />
         <div className="game-page">
             <div className="game">
-                <Game2 />
+                <Game />
             </div>
         </div>
     </React.Fragment>
