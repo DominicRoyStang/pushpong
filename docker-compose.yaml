@@ -15,6 +15,10 @@ services:
 
     backend:
         image: pushpong_backend:latest
+        build:
+            context: ./backend
+            args:
+                app_env: dev
         command: npm start
         ports:
             - "5000:5000"
