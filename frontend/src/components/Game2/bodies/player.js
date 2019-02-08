@@ -23,7 +23,7 @@ export default class Player {
         });
 
         this.bumper = new RectangularBumper({
-            position: rotateAroundAnchor(angle, x, y, ...this.paddle.position),
+            position: rotateAroundAnchor(angle, x, y + this.springLength, ...this.paddle.position),
             angle: angle,
             mass: 100
         });
