@@ -18,7 +18,7 @@ export const worldSetup = (world) => {
     world.addBody(ceiling);
 };
 
-export const addBall = (world, x = paddleOffset*6, y = canvasHeight/2) => {
+export const addBall = (world, x = paddleOffset*5.5, y = canvasHeight/2) => {
 
     // Create ball
     const ball = new Ball({
