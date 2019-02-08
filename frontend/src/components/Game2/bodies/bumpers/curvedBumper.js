@@ -25,14 +25,15 @@ export default class CurvedBumper extends Body {
         const width = canvasHeight/5;
         const height = paddleHeight*3;
 
+        // create curve
         const curve = new Bezier(width/2, paddleHeight, width/4, height, -width/4, height, -width/2, paddleHeight);
-        let lookUpTable = curve.getLUT(16);
-        //console.log(lut);
+        
+        // get points from curve
+        const lookUpTable = curve.getLUT(16);
         const vertices = [[width/2, 0]];
         for (const {x, y} of lookUpTable) {
             vertices.push([x, y])
         }
-
         vertices.push([-width/2, 0])
         
         // add bumper
