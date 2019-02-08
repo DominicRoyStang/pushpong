@@ -1,7 +1,9 @@
+import Ball from "./ball";
+import Boundary from "./boundary";
 import Player from "./player";
-import PaddleBoundPair from "./paddleBound";
 
 export {
-    Player,
-    PaddleBoundPair
+    Ball,
+    Boundary,
+    Player
 };
