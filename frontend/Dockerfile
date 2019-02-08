@@ -6,6 +6,9 @@ ENV NPM_CONFIG_LOGLEVEL warn
 RUN mkdir -p /frontend
 WORKDIR /frontend
 
+# Add git
+RUN apk --no-cache add git
+
 # Install app dependencies
 COPY package*.json ./
 RUN npm install
