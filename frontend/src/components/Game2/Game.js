@@ -4,9 +4,9 @@ import {World} from "p2";
 import P5 from "p5";
 import Controls from "./controls";
 import {BACKEND_URL} from "config";
-import {canvasWidth, canvasHeight, boundWidth, paddleOffset} from "./utils/dimensions";
+import {canvasWidth, canvasHeight} from "./utils/dimensions";
 import colors from "./utils/colors";
-import {Boundary, Ball, Player} from "./bodies";
+import {worldSetup, addBall, addPlayer} from "./worldSetup";
 
 export default class Game extends React.Component {
 
@@ -25,34 +25,17 @@ export default class Game extends React.Component {
 
     componentDidMount() {
 
-        // Create walls
-        const ground = new Boundary({
-            position: [canvasWidth/2, 0 - boundWidth/2]
-        }, canvasWidth, boundWidth);
-        const ceiling = new Boundary({
-            position: [canvasWidth/2, canvasHeight + boundWidth/2]
-        }, canvasWidth, boundWidth);
+        // Create boundaries
+        worldSetup(this.world);
+        
+        // Ball will eventually be created once two players join.
+        addBall(this.world);
 
-        // Create ball
-        const ball = new Ball({
-            position: [paddleOffset*6, canvasHeight/2]
-        });
-        
-        // Add bodies to world
-        this.world.addBody(ground);
-        this.world.addBody(ceiling);
-        this.world.addBody(ball);
-        
         // Create players
-        const player1 = new Player(paddleOffset, canvasHeight/2, -Math.PI/2);
-        const player2 = new Player(canvasWidth - paddleOffset*4, canvasHeight/2, Math.PI/2);
-        const player3 = new Player(400, 30, 0);
+        const player1 = addPlayer(this.world, 0);
+        const player2 = addPlayer(this.world, 1);
         
-        // Add player composites to world
-        player1.addToWorld(this.world);
-        player2.addToWorld(this.world);
-        player3.addToWorld(this.world);
-        
+        // Create sketch
         const sketch = (p) => { // TODO: Move sketch to its own file; import it here.
 
             p.setup = () => {
@@ -130,15 +113,7 @@ export default class Game extends React.Component {
         requestAnimationFrame(animate);
     }
 
-    onMouseUp = (mouseEvent) => {
-        this.world.addBody(
-            new Ball({
-                position: [
-                    this.p5.mouseX,
-                    canvasHeight - this.p5.mouseY]
-            })
-        );
-    }
+    onMouseUp = (mouseEvent) => addBall(this.world, this.p5.mouseX, canvasHeight - this.p5.mouseY);
 
     render() {
         return (

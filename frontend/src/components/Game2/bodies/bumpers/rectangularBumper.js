@@ -1,7 +1,8 @@
 import {Body, Convex} from "p2";
-import {canvasHeight, paddleHeight} from "../../utils/dimensions"
+import {canvasHeight, paddleHeight} from "../../utils/dimensions";
 import {drawConvex} from "../../render";
 import colors from "../../utils/colors";
+import {groups, masks} from "../../utils/collisions";
 
 /*
  * A bumper is the front part of a player that is used to push the ball. It is attached to a paddle via springs.
@@ -25,6 +26,8 @@ export default class RectangularBumper extends Body {
         
         // add bumper
         const bumper = new Convex({
+            collisionGroup: groups.defaultGroup,
+            collisionMask: masks.defaultMask,
             vertices: [[width/2, 0], [width/2, height], [-width/2, height], [-width/2, 0]]
         });
         this.addShape(bumper);

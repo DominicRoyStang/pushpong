@@ -1,6 +1,7 @@
 import {Body, Circle} from "p2";
 import {drawCircle} from "../render";
 import colors from "../utils/colors";
+import {groups, masks} from "../utils/collisions";
 
 /* 
  * A ball is a circular dynamic body.
@@ -22,6 +23,8 @@ export default class Ball extends Body {
         
         // add shape
         const shape = new Circle({
+            collisionGroup: groups.defaultGroup,
+            collisionMask: masks.defaultMask,
             radius: radius
         });
         this.addShape(shape);

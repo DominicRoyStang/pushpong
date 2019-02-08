@@ -3,6 +3,7 @@ import {canvasHeight, paddleHeight} from "../utils/dimensions"
 import {drawRectangle, drawLineSpring} from "../render";
 import {RectangularBumper} from "./bumpers";
 import colors from "../utils/colors";
+import {groups, masks} from "../utils/collisions";
 import {rotateAroundAnchor} from "../utils/math";
 
 /*
@@ -84,6 +85,8 @@ class Paddle extends Body {
 
         // add paddle
         const paddle = new Box({
+            collisionGroup: groups.paddles,
+            collisionMask: masks.paddles,
             width: canvasHeight/5,
             height: paddleHeight
         });
