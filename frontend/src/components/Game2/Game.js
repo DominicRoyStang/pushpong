@@ -21,6 +21,7 @@ export default class Game extends React.Component {
         });
 
         this.world.defaultContactMaterial.restitution = 1;
+        this.world.defaultContactMaterial.contactSkinSize = 0;
     }
 
     componentDidMount() {

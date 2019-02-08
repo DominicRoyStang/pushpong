@@ -1,7 +1,7 @@
 import {Body, Box, LinearSpring, DistanceConstraint} from "p2";
 import {canvasHeight, paddleHeight} from "../utils/dimensions"
 import {drawRectangle, drawLineSpring} from "../render";
-import {RectangularBumper} from "./bumpers";
+import {CurvedBumper} from "./bumpers";
 import colors from "../utils/colors";
 import {groups, masks} from "../utils/collisions";
 import {rotateAroundAnchor} from "../utils/math";
@@ -22,7 +22,7 @@ export default class Player {
             angle: angle
         });
 
-        this.bumper = new RectangularBumper({
+        this.bumper = new CurvedBumper({
             position: rotateAroundAnchor(angle, x, y + this.springLength, ...this.paddle.position),
             angle: angle,
             mass: 100

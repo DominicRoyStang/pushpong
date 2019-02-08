@@ -1,4 +1,5 @@
 import {Body, Convex} from "p2";
+import Bezier from "bezier-js";
 import {canvasHeight, paddleHeight} from "../../utils/dimensions"
 import {drawConvex} from "../../render";
 import colors from "../../utils/colors";
@@ -22,26 +23,23 @@ export default class CurvedBumper extends Body {
 
         // dimensions
         const width = canvasHeight/5;
-        const height = paddleHeight*2;
+        const height = paddleHeight*3;
+
+        const curve = new Bezier(width/2, paddleHeight, width/4, height, -width/4, height, -width/2, paddleHeight);
+        let lookUpTable = curve.getLUT(16);
+        //console.log(lut);
+        const vertices = [[width/2, 0]];
+        for (const {x, y} of lookUpTable) {
+            vertices.push([x, y])
+        }
+
+        vertices.push([-width/2, 0])
         
         // add bumper
         const bumper = new Convex({
             collisionGroup: groups.defaultGroup,
             collisionMask: masks.defaultMask,
-            vertices: [
-                [width/2, 0],
-                [width/2, height/3],
-                [width/2.1, height/2],
-                [width/2.3, height/1.5],
-                [width/2.7, height/1.3],
-                [width/3.5, height/1.1],
-                [width/5.1, height/1.05],
-                [width/6, height],
-                [0, height],
-                [-width/6, height],
-                [-width/2, height/3],
-                [-width/2, 0]
-            ]
+            vertices: vertices
         });
         this.addShape(bumper);
     }
