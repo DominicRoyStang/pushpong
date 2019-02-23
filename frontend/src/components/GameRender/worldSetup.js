@@ -5,6 +5,9 @@ import {groups, masks} from "./utils/collisions";
 
 export const worldSetup = (world) => {
 
+    world.defaultContactMaterial.restitution = 1;
+    world.defaultContactMaterial.contactSkinSize = 0;
+
     // Create walls
     const ground = new Boundary({
         position: [canvasWidth/2, 0 - boundWidth/2]

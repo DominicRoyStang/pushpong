@@ -1,30 +1,20 @@
-import React from "react";
 import io from "socket.io-client";
 import {World} from "p2";
-import P5 from "p5";
 import Controls from "./controls";
 import {BACKEND_URL} from "config";
-import {canvasWidth, canvasHeight} from "./utils/dimensions";
-import colors from "./utils/colors";
+//import {canvasHeight} from "./utils/dimensions";
 import {worldSetup, addBall, addPlayer} from "./worldSetup";
 
-export default class Game extends React.Component {
+export default class Game {
 
     constructor() {
-        super();
-
         this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
-        this.controls = new Controls(this.socket); //TODO: Remove dependency on socket from controls
+        this.player1Controls = new Controls(this.socket); //TODO: Remove dependency on socket from controls
+        this.player2Controls = new Controls(this.socket);
 
         this.world = new World({
             gravity: [0, 0]
         });
-
-        this.world.defaultContactMaterial.restitution = 1;
-        this.world.defaultContactMaterial.contactSkinSize = 0;
-    }
-
-    componentDidMount() {
 
         // Create boundaries
         worldSetup(this.world);
@@ -35,33 +25,6 @@ export default class Game extends React.Component {
         // Create players
         const player1 = addPlayer(this.world, 0);
         const player2 = addPlayer(this.world, 1);
-        
-        // Create sketch
-        const sketch = (p) => { // TODO: Move sketch to its own file; import it here.
-
-            p.setup = () => {
-                p.createCanvas(canvasWidth, canvasHeight);
-                p.push();
-                p.noStroke();
-                p.angleMode(p.RADIANS);
-                p.rectMode(p.CENTER);
-            };
-
-            p.draw = () => {
-                p.background(colors.background);
-                p.fill(colors.defaultColor);
-                for (const body of this.world.bodies) {
-                    body.render(p);
-                }
-                for (const spring of this.world.springs) {
-                    spring.render(p);
-                }
-            };
-        };
-
-        // Create and autofocus on renderer
-        this.p5 = new P5(sketch, document.getElementById("game-render"));
-        document.getElementById("game-render").focus();
 
         this.runEngine(this.world);
 
@@ -69,7 +32,7 @@ export default class Game extends React.Component {
         this.world.on('postStep', () => {
             const paddle = player1.paddle;
             const bumper = player1.bumper;
-            if (this.controls.UP) {
+            if (this.player1Controls.UP) {
                 const paddleVelocity = [-30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
@@ -114,15 +77,6 @@ export default class Game extends React.Component {
         requestAnimationFrame(animate);
     }
 
-    onMouseUp = (mouseEvent) => addBall(this.world, this.p5.mouseX, canvasHeight - this.p5.mouseY);
+    //onMouseUp = (mouseEvent) => addBall(this.world, this.p5.mouseX, canvasHeight - this.p5.mouseY);
 
-    render() {
-        return (
-            <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp} onMouseUp={this.onMouseUp}>
-                {
-                    //game will be rendered here when the component mounts.
-                }
-            </div>
-        );
-    }
 }

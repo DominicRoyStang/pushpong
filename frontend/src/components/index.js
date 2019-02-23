@@ -1,7 +1,7 @@
-import Game from "./Game";
+import GameRender from "./GameRender";
 import Header from "./Header";
 
 export {
-    Game,
+    GameRender,
     Header
 };
