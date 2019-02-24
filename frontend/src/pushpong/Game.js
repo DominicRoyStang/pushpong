@@ -10,7 +10,7 @@ export default class Game {
     constructor() {
         this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
 
-        this.player1Controls = new Controls(this.onControlChange.bind(this));
+        this.player1Controls = new Controls(this.onControlChange.bind(this)); //TODO: remove bind
         this.player2Controls = new Controls(() => {});
 
         this.world = new World({
@@ -33,14 +33,14 @@ export default class Game {
         this.world.on('postStep', () => {
             const paddle = player1.paddle;
             const bumper = player1.bumper;
-            if (this.player1Controls.UP) {
+            if (this.player1Controls.LEFT) {
                 const paddleVelocity = [-30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
                 bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
                 let desiredLocal = [-30, currentLocal[1]];
                 bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
-            } else if (this.player1Controls.DOWN) {
+            } else if (this.player1Controls.RIGHT) {
                 const paddleVelocity = [30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
@@ -64,14 +64,14 @@ export default class Game {
         this.world.on('postStep', () => {
             const paddle = player2.paddle;
             const bumper = player2.bumper;
-            if (this.player2Controls.UP) {
+            if (this.player2Controls.LEFT) {
                 const paddleVelocity = [-30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
                 bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
                 let desiredLocal = [-30, currentLocal[1]];
                 bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
-            } else if (this.player2Controls.DOWN) {
+            } else if (this.player2Controls.RIGHT) {
                 const paddleVelocity = [30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
@@ -100,11 +100,15 @@ export default class Game {
     setUpSockets() {
         this.socket.on("control", (value) => {
             switch(value) {
-                case "UP":
-                    this.player2Controls.DOWN = !this.player2Controls.DOWN;
+                case "LEFT":
+                    this.player2Controls.LEFT = !this.player2Controls.LEFT;
                     break;
-                case "DOWN":
-                    this.player2Controls.UP = !this.player2Controls.UP;
+                case "RIGHT":
+                    this.player2Controls.RIGHT = !this.player2Controls.RIGHT;
+                    break;
+                case "BOOST":
+                    this.player2Controls.BOOST = !this.player2Controls.BOOST;
+                    break;
                 default:
                     return;
             }
