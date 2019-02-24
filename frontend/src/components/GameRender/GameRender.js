@@ -1,8 +1,8 @@
 import React from "react";
 import P5 from "p5";
-import {canvasWidth, canvasHeight} from "./utils/dimensions";
-import colors from "./utils/colors";
-import Game from "./Game";
+import {canvasWidth, canvasHeight} from "pushpong/utils/dimensions";
+import colors from "pushpong/utils/colors";
+import Game from "pushpong";
 
 export default class GameRender extends React.Component {
 
