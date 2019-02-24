@@ -35,7 +35,7 @@ const main = () => {
 
         socket.on("control", (data) => {
             console.log(data);
-            socket.to(match.id).emit("control", data);
+            socket.broadcast.emit("control", data);
         });
     });
 }

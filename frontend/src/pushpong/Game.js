@@ -10,7 +10,7 @@ export default class Game {
     constructor() {
         this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
 
-        this.player1Controls = new Controls(this.onControlChange);
+        this.player1Controls = new Controls(this.onControlChange.bind(this));
         this.player2Controls = new Controls(() => {});
 
         this.world = new World({
@@ -61,13 +61,61 @@ export default class Game {
             }
         });
 
+        this.world.on('postStep', () => {
+            const paddle = player2.paddle;
+            const bumper = player2.bumper;
+            if (this.player2Controls.UP) {
+                const paddleVelocity = [-30, 0];
+                paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
+                let currentLocal = [0, 0];
+                bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
+                let desiredLocal = [-30, currentLocal[1]];
+                bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
+            } else if (this.player2Controls.DOWN) {
+                const paddleVelocity = [30, 0];
+                paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
+                let currentLocal = [0, 0];
+                bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
+                let desiredLocal = [30, currentLocal[1]];
+                bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
+            } else {
+                const paddleVelocity = [0, 0];
+                paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
+                let currentLocal = [0, 0];
+                bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
+                let desiredLocal = [0, currentLocal[1]];
+                bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
+            }
+            if (this.player2Controls.BOOST) {
+                const force = 128 * bumper.mass;
+                bumper.applyForceLocal([0, force]);
+            }
+        });
+
+        this.setUpSockets();
+
         console.log(this.world);
+    }
+
+    setUpSockets() {
+        this.socket.on("control", (value) => {
+            switch(value) {
+                case "UP":
+                    this.player2Controls.DOWN = !this.player2Controls.DOWN;
+                    break;
+                case "DOWN":
+                    this.player2Controls.UP = !this.player2Controls.UP;
+                default:
+                    return;
+            }
+        });
     }
 
     onControlChange = (value) => {
         this.socket.emit("control", value);
     }
 
+    // Runs the engine at a framerate-independent speed.
     runEngine(world) {
         let maxSubSteps = 10;
         let fixedTimeStep = 1/60;
