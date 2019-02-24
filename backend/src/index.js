@@ -22,6 +22,7 @@ const main = () => {
 
         socket.on("control", (data) => {
             console.log(data);
+            socket.broadcast.emit("control", data);
         });
     });
 }
