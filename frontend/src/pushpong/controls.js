@@ -51,7 +51,7 @@ export default class Controls {
             // control already set to true
             return;
         }
-        
+
         this[control] = true;
         this.onChange(control);
     }
