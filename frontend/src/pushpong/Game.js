@@ -8,11 +8,6 @@ import {worldSetup, addBall, addPlayer} from "./worldSetup";
 export default class Game {
 
     constructor() {
-        this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
-
-        this.player1Controls = new Controls(this.onControlChange.bind(this)); //TODO: remove bind
-        this.player2Controls = new Controls(() => {});
-
         this.world = new World({
             gravity: [0, 0]
         });
@@ -23,24 +18,56 @@ export default class Game {
         // Ball will eventually be created once two players join.
         addBall(this.world);
 
+        this.isSetUp = false;
+        this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
+
+        this.controls = new Controls(this.onControlChange.bind(this)); //TODO: remove bind
+        this.opponentControls = new Controls(() => {});
+
+        this.socket.on("player-number", (value) => {
+            switch(value) {
+                case "1":
+                    this.playerNumber = 1;
+                    break;
+                case "2":
+                    this.playerNumber = 2;
+                    break;
+                default:
+                    return;
+            }
+            this.setUpOpponent();
+            this.setUpWorld();
+            this.isSetUp = true;
+        });
+
+        this.socket.emit("player", "what is my player number?");
+    }
+
+    setUpWorld() {
         // Create players
         const player1 = addPlayer(this.world, 0);
         const player2 = addPlayer(this.world, 1);
-
         this.runEngine(this.world);
 
         // Update the character controller after each physics tick.
         this.world.on('postStep', () => {
-            const paddle = player1.paddle;
-            const bumper = player1.bumper;
-            if (this.player1Controls.LEFT) {
+            let paddle = null;
+            let bumper = null;
+            if(this.playerNumber === 1) {
+                paddle = player1.paddle;
+                bumper = player1.bumper;    
+            } else {
+                paddle = player2.paddle;
+                bumper = player2.bumper;
+            }
+            if (this.controls.LEFT) {
                 const paddleVelocity = [-30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
                 bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
                 let desiredLocal = [-30, currentLocal[1]];
                 bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
-            } else if (this.player1Controls.RIGHT) {
+            } else if (this.controls.RIGHT) {
                 const paddleVelocity = [30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
@@ -55,23 +82,30 @@ export default class Game {
                 let desiredLocal = [0, currentLocal[1]];
                 bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
             }
-            if (this.player1Controls.BOOST) {
+            if (this.controls.BOOST) {
                 const force = 128 * bumper.mass;
                 bumper.applyForceLocal([0, force]);
             }
         });
 
         this.world.on('postStep', () => {
-            const paddle = player2.paddle;
-            const bumper = player2.bumper;
-            if (this.player2Controls.LEFT) {
+            let paddle = null;
+            let bumper = null;
+            if(this.playerNumber === 1) {
+                paddle = player2.paddle;
+                bumper = player2.bumper;    
+            } else {
+                paddle = player1.paddle;
+                bumper = player1.bumper;
+            }
+            if (this.opponentControls.LEFT) {
                 const paddleVelocity = [-30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
                 bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
                 let desiredLocal = [-30, currentLocal[1]];
                 bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
-            } else if (this.player2Controls.RIGHT) {
+            } else if (this.opponentControls.RIGHT) {
                 const paddleVelocity = [30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
@@ -86,33 +120,40 @@ export default class Game {
                 let desiredLocal = [0, currentLocal[1]];
                 bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
             }
-            if (this.player2Controls.BOOST) {
+            if (this.opponentControls.BOOST) {
                 const force = 128 * bumper.mass;
                 bumper.applyForceLocal([0, force]);
             }
         });
 
-        this.setUpSockets();
-
         console.log(this.world);
     }
 
-    setUpSockets() {
+    setUpOpponent() {
         this.socket.on("control", (value) => {
             switch(value) {
                 case "LEFT":
-                    this.player2Controls.LEFT = !this.player2Controls.LEFT;
+                    this.opponentControls.LEFT = !this.opponentControls.LEFT;
                     break;
                 case "RIGHT":
-                    this.player2Controls.RIGHT = !this.player2Controls.RIGHT;
+                    this.opponentControls.RIGHT = !this.opponentControls.RIGHT;
                     break;
                 case "BOOST":
-                    this.player2Controls.BOOST = !this.player2Controls.BOOST;
+                    this.opponentControls.BOOST = !this.opponentControls.BOOST;
                     break;
                 default:
                     return;
             }
         });
+    }
+
+    moveRight(player) {
+    }
+
+    moveLeft(player) {
+    }
+
+    boost(player) {
     }
 
     onControlChange = (value) => {

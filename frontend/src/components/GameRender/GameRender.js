@@ -11,7 +11,7 @@ export default class GameRender extends React.Component {
         const game = new Game();
         this.game = game;
         this.world = game.world;
-        this.controls = game.player1Controls;
+        this.controls = game.controls;
     }
 
     componentDidMount() {
