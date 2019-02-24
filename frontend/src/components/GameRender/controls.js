@@ -7,18 +7,17 @@ const KEY_SPACEBAR = 32;
 export default class Controls {
 
     constructor(
-        socket,
+        onChange,
         up_keys = [KEY_ARROW_UP, KEY_W],
         down_keys = [KEY_ARROW_DOWN, KEY_S],
         boost_keys = [KEY_SPACEBAR]
     ) {
-        this.socket = socket;
-        
         this.controls = {
             "UP": up_keys,
             "DOWN": down_keys,
             "BOOST": boost_keys
         }
+        this.onChange = onChange;
 
         this.UP = false;
         this.DOWN = false;
@@ -55,10 +54,6 @@ export default class Controls {
         
         this[control] = true;
         this.onChange(control);
-    }
-
-    onChange = (value) => {
-        this.socket.emit("control", value);
     }
 
     control_from_key(keyCode) {

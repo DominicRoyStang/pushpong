@@ -9,8 +9,9 @@ export default class Game {
 
     constructor() {
         this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
-        this.player1Controls = new Controls(this.socket); //TODO: Remove dependency on socket from controls
-        this.player2Controls = new Controls(this.socket);
+
+        this.player1Controls = new Controls(this.onControlChange);
+        this.player2Controls = new Controls(() => {});
 
         this.world = new World({
             gravity: [0, 0]
@@ -39,7 +40,7 @@ export default class Game {
                 bumper.vectorToLocalFrame(currentLocal, bumper.velocity);
                 let desiredLocal = [-30, currentLocal[1]];
                 bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
-            } else if (this.controls.DOWN) {
+            } else if (this.player1Controls.DOWN) {
                 const paddleVelocity = [30, 0];
                 paddle.vectorToWorldFrame(paddle.velocity, paddleVelocity);
                 let currentLocal = [0, 0];
@@ -54,13 +55,17 @@ export default class Game {
                 let desiredLocal = [0, currentLocal[1]];
                 bumper.vectorToWorldFrame(bumper.velocity, desiredLocal);
             }
-            if (this.controls.BOOST) {
+            if (this.player1Controls.BOOST) {
                 const force = 128 * bumper.mass;
                 bumper.applyForceLocal([0, force]);
             }
         });
 
         console.log(this.world);
+    }
+
+    onControlChange = (value) => {
+        this.socket.emit("control", value);
     }
 
     runEngine(world) {
