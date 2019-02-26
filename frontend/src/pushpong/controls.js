@@ -1,27 +1,30 @@
+const KEY_ARROW_LEFT = 37;
 const KEY_ARROW_UP = 38;
+const KEY_ARROW_RIGHT = 39;
 const KEY_ARROW_DOWN = 40;
+const KEY_A = 65;
 const KEY_W = 87;
+const KEY_D = 68;
 const KEY_S = 83;
 const KEY_SPACEBAR = 32;
 
 export default class Controls {
 
     constructor(
-        socket,
-        up_keys = [KEY_ARROW_UP, KEY_W],
-        down_keys = [KEY_ARROW_DOWN, KEY_S],
+        onChange,
+        left_keys = [KEY_ARROW_LEFT, KEY_ARROW_UP, KEY_A, KEY_W],
+        right_keys = [KEY_ARROW_RIGHT, KEY_ARROW_DOWN, KEY_D, KEY_S],
         boost_keys = [KEY_SPACEBAR]
     ) {
-        this.socket = socket;
-        
         this.controls = {
-            "UP": up_keys,
-            "DOWN": down_keys,
+            "LEFT": left_keys,
+            "RIGHT": right_keys,
             "BOOST": boost_keys
         }
+        this.onChange = onChange;
 
-        this.UP = false;
-        this.DOWN = false;
+        this.LEFT = false;
+        this.RIGHT = false;
         this.BOOST = false;
     }
 
@@ -52,13 +55,9 @@ export default class Controls {
             // control already set to true
             return;
         }
-        
+
         this[control] = true;
         this.onChange(control);
-    }
-
-    onChange = (value) => {
-        this.socket.emit("control", value);
     }
 
     control_from_key(keyCode) {

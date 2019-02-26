@@ -14,4 +14,4 @@ Try it out now at  [pushpong.xyz](http://www.pushpong.xyz)
 
 # Troubleshooting
 If there is ever an issue with a missing import, or something works with npm locally but not using docker-compose, run the following command
-`docker-compose --file services/docker-compose.yaml down -v`
+`docker-compose --file docker-compose.yaml down -v`

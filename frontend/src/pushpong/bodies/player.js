@@ -105,7 +105,7 @@ class PlayerSpring extends LinearSpring {
         props = Object.assign({
             stiffness: 3*bumper.mass,
             restLength: 10,
-            damping : 0.5,
+            damping : 0,
             localAnchorA: [-35, paddle.shapes[0].centerOfMass[1]],
             localAnchorB: [-35, bumper.shapes[0].centerOfMass[1]]
         }, props);
