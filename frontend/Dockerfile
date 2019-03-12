@@ -1,20 +1,19 @@
 FROM node:8.9.1-alpine
 
+# Setup node environment
 ENV NPM_CONFIG_LOGLEVEL warn
-
-# Create service directory
-RUN mkdir -p /frontend
-WORKDIR /frontend
 ARG app_env
 ENV NODE_ENV $app_env
 
 # Source environment variables if in production mode
-#COPY ./scripts/set_env_vars.sh /tmp/
-#RUN chmod u+x /tmp/set_env_vars.sh && sh /tmp/set_env_vars.sh $app_env
 ARG backend_host
 ENV BACKEND_HOST=${backend_host:-backend.pushpong.xyz}
 ARG backend_port
 ENV BACKEND_PORT=${backend_port:-5000}
+
+# Create service directory
+RUN mkdir -p /frontend
+WORKDIR /frontend
 
 # Add git
 RUN apk --no-cache add git
