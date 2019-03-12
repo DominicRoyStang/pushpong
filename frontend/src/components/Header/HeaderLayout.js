@@ -1,6 +1,5 @@
 import React from "react";
 import {logo} from "images/";
-import "./Header.css";
 
 const HeaderLayout = ({onLogoClick}) => (
     <header className="header">

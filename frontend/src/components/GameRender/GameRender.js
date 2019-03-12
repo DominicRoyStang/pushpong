@@ -3,6 +3,7 @@ import P5 from "p5";
 import {canvasWidth, canvasHeight} from "pushpong/utils/dimensions";
 import colors from "pushpong/utils/colors";
 import Game from "pushpong";
+import "./GameRender.scss";
 
 export default class GameRender extends React.Component {
 
@@ -46,9 +47,10 @@ export default class GameRender extends React.Component {
     render() {
         return (
             <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp} /*onMouseUp={this.onMouseUp}*/>
-                {
-                    //game will be rendered here when the component mounts.
-                }
+                <div className="score-display">
+                    <h3>Score: {0} - {0}</h3>
+                </div>
+                {/* Game will be rendered here when the component mounts. */}
             </div>
         );
     }

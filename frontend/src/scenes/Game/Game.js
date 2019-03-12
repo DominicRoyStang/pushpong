@@ -1,10 +1,9 @@
 import React from "react";
 import GameLayout from "./GameLayout";
+import "./Game.scss";
 
 const Game = () => (
-    <React.Fragment>
-        <GameLayout />
-    </React.Fragment>
+    <GameLayout />
 );
 
 export default Game;

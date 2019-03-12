@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Route, Router, Switch} from "react-router-dom";
 import history from "utils/history";
 import {Game, Landing} from "./scenes"
-import "./App.css";
+import "./App.scss";
 
 class App extends Component {
     render() {
