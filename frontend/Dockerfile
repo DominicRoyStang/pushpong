@@ -8,6 +8,10 @@ WORKDIR /frontend
 ARG app_env
 ENV NODE_ENV $app_env
 
+# Source environment variables if in production mode
+COPY ./scripts/set_env_vars.sh /tmp/
+RUN chmod u+x /tmp/set_env_vars.sh && . /tmp/set_env_vars.sh $app_env
+
 # Add git
 RUN apk --no-cache add git
 
