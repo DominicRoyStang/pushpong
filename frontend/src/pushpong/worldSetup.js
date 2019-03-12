@@ -4,7 +4,6 @@ import {rotateAroundAnchor} from "./utils/math";
 import {groups, masks} from "./utils/collisions";
 
 export const worldSetup = (world) => {
-
     world.defaultContactMaterial.restitution = 1;
     world.defaultContactMaterial.contactSkinSize = 0;
 
@@ -22,16 +21,15 @@ export const worldSetup = (world) => {
 };
 
 export const addBall = (world, x = paddleOffset*5.5, y = canvasHeight/2) => {
-
     // Create ball
     const ball = new Ball({
         position: [x, y]
     });
     world.addBody(ball);
+    return ball;
 }
 
 export const addPlayer = (world, playerNumber) => {
-
     const playerPositions = [
         {x: paddleOffset, y: canvasHeight/2, angle: -Math.PI/2},
         {x: canvasWidth - paddleOffset, y: canvasHeight/2, angle: Math.PI/2},
@@ -51,7 +49,6 @@ export const addPlayer = (world, playerNumber) => {
 };
 
 const createPlayerBounds = (player) => {
-
     const [paddleX, paddleY] = player.paddle.position;
     const angle = player.paddle.angle;
 

@@ -6,7 +6,6 @@ import {BACKEND_URL} from "config";
 import {worldSetup, addBall, addPlayer} from "./worldSetup";
 
 export default class Game {
-
     constructor() {
         this.world = new World({
             gravity: [0, 0]
@@ -16,9 +15,8 @@ export default class Game {
         worldSetup(this.world);
         
         // Ball will eventually be created once two players join.
-        addBall(this.world);
+        this.ball = addBall(this.world);
 
-        this.isSetUp = false;
         this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
 
         this.controls = new Controls(this.onControlChange.bind(this)); //TODO: remove bind
@@ -37,7 +35,6 @@ export default class Game {
             }
             this.setUpOpponent();
             this.setUpWorld();
-            this.isSetUp = true;
         });
 
         this.socket.emit("player", "what is my player number?");
@@ -130,7 +127,7 @@ export default class Game {
     }
 
     setUpOpponent() {
-        this.socket.on("control", (value) => {
+        this.socket.on("opponent-control", (value) => {
             switch(value) {
                 case "LEFT":
                     this.opponentControls.LEFT = !this.opponentControls.LEFT;
@@ -145,15 +142,6 @@ export default class Game {
                     return;
             }
         });
-    }
-
-    moveRight(player) {
-    }
-
-    moveLeft(player) {
-    }
-
-    boost(player) {
     }
 
     onControlChange = (value) => {
