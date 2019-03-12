@@ -48,7 +48,7 @@ export default class GameRender extends React.Component {
         return (
             <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp} /*onMouseUp={this.onMouseUp}*/>
                 <div className="score-display">
-                    <h3>Score: {0} - {0}</h3>
+                    <h2>Score: {0} - {0}</h2>
                 </div>
                 {/* Game will be rendered here when the component mounts. */}
             </div>
