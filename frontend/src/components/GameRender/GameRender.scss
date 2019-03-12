@@ -1,5 +1,11 @@
 #game-render {
     display: flex;
+    flex-direction: column;
+
+    .score-display {
+        position: absolute;
+        align-self: center;
+    }
 
     canvas {
         // Modify the CSS of the game canvas

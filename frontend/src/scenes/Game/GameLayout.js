@@ -1,6 +1,5 @@
 import React from "react";
 import {GameRender, Header} from "components/"
-import "./Game.css";
 
 const GameLayout = () => (
     <React.Fragment>

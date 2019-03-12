@@ -1,5 +1,4 @@
 import React from "react";
-import "./Landing.css";
 import {logo} from "images/";
 
 const LandingLayout = ({onClick}) => (
