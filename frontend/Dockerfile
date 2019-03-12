@@ -9,8 +9,12 @@ ARG app_env
 ENV NODE_ENV $app_env
 
 # Source environment variables if in production mode
-COPY ./scripts/set_env_vars.sh /tmp/
-RUN chmod u+x /tmp/set_env_vars.sh && . /tmp/set_env_vars.sh $app_env
+#COPY ./scripts/set_env_vars.sh /tmp/
+#RUN chmod u+x /tmp/set_env_vars.sh && sh /tmp/set_env_vars.sh $app_env
+ARG backend_host
+ENV BACKEND_HOST=${backend_host:-backend.pushpong.xyz}
+ARG backend_port
+ENV BACKEND_PORT=${backend_port:-5000}
 
 # Add git
 RUN apk --no-cache add git
