@@ -39,7 +39,7 @@ export const addPlayer = (world, playerNumber) => {
         {x: canvasWidth/2, y: paddleOffset, angle: 0},
         {x: canvasWidth/2, y: canvasHeight - paddleOffset, angle: Math.PI}
     ];
-    const {x, y, angle} = playerPositions[playerNumber];
+    const {x, y, angle} = playerPositions[playerNumber - 1];
     const player = new Player(x, y, angle);
 
     const [bound1, bound2] = createPlayerBounds(player);
