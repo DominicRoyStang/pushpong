@@ -31,11 +31,14 @@ export default class GameRender extends React.Component {
 
             p.draw = () => {
                 p.background(colors.background);
+                
                 let score = `Score: ${this.game.state.player1Score} - ${this.game.state.player2Score}`;
                 p.text(score, canvasWidth/2, p.textAscent());
+                
                 for (const body of this.world.bodies) {
                     body.render(p);
                 }
+                
                 for (const spring of this.world.springs) {
                     spring.render(p);
                 }
@@ -49,7 +52,7 @@ export default class GameRender extends React.Component {
 
     render() {
         return (
-            <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp} /*onMouseUp={this.onMouseUp}*/>
+            <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp}>
                 {/* Game will be rendered here when the component mounts. */}
             </div>
         );

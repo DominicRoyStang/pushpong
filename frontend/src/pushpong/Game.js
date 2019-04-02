@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 import {World} from "p2";
-import Controls from "./controls";
+import Controls, {player1DefaultControls, player2DefaultControls, opponentControls} from "./controls";
 import {BACKEND_URL} from "config";
 //import {canvasHeight} from "./utils/dimensions";
 import {worldSetup, addBall, addPlayer} from "./worldSetup";
@@ -34,8 +34,8 @@ export default class Game {
 
         this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
 
-        this.controls = new Controls(this.onControlChange.bind(this)); //TODO: remove bind
-        this.opponentControls = new Controls(() => {});
+        this.controls = new Controls(this.onControlChange.bind(this), player1DefaultControls);
+        this.opponentControls = new Controls(() => {}, opponentControls);
 
         this.socket.on("player-number", (value) => {
             switch(value) {
@@ -44,6 +44,7 @@ export default class Game {
                     break;
                 case "2":
                     this.playerNumber = 2;
+                    this.controls.updateControls(player2DefaultControls);
                     break;
                 default:
                     return;
