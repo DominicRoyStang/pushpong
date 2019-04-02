@@ -1,9 +1,9 @@
 import {canvasWidth, canvasHeight, boundWidth, paddleOffset, paddleHeight} from "./utils/dimensions";
-import {Boundary, Ball, Player} from "./bodies";
+import {Boundary, Ball, GoalSensor, Player} from "./bodies";
 import {rotateAroundAnchor} from "./utils/math";
 import {groups, masks} from "./utils/collisions";
 
-export const worldSetup = (world) => {
+export const worldSetup = (world, onPlayer1Goal, onPlayer2Goal) => {
     world.defaultContactMaterial.restitution = 1;
     world.defaultContactMaterial.contactSkinSize = 0;
 
@@ -14,6 +14,9 @@ export const worldSetup = (world) => {
     const ceiling = new Boundary({
         position: [canvasWidth/2, canvasHeight + boundWidth/2]
     }, canvasWidth, boundWidth);
+
+    // Setup sensors
+    setupSensors(world, onPlayer2Goal, onPlayer1Goal);
 
     // Add bodies to world
     world.addBody(ground);
@@ -67,4 +70,29 @@ const createPlayerBounds = (player) => {
     bound2.render = () => {};
 
     return [bound1, bound2]
+}
+
+const setupSensors = (world, onLeftActive, onRightActive) => {
+    // Create sensors
+    const leftSensor = new GoalSensor({
+        position: [-10, canvasHeight/2]
+    });
+
+    const rightSensor = new GoalSensor({
+        angle: -Math.PI/2,
+        position: [canvasWidth + 10, canvasHeight/2]
+    });
+
+    world.addBody(leftSensor);
+    world.addBody(rightSensor);
+
+    world.on("endContact", (event) => {
+        console.log(event);
+        if (event.bodyA === leftSensor || event.bodyB === leftSensor) {
+            onLeftActive();
+        }
+        if (event.bodyA === rightSensor || event.bodyB === rightSensor) {
+            onRightActive();
+        }
+    });
 }

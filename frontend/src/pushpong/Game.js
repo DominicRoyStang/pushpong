@@ -6,13 +6,28 @@ import {BACKEND_URL} from "config";
 import {worldSetup, addBall, addPlayer} from "./worldSetup";
 
 export default class Game {
+
+    state = {
+        status: "waiting",
+        player1Score: 0,
+        player2Score: 0
+    }
+
     constructor() {
         this.world = new World({
             gravity: [0, 0]
         });
 
         // Create boundaries
-        worldSetup(this.world);
+        const onPlayer1Goal = () => {
+            this.state.player1Score++;
+            console.log("player 1 scored");
+        };
+        const onPlayer2Goal = () => {
+            this.state.player2Score++;
+            console.log("player 2 scored");
+        };
+        worldSetup(this.world, onPlayer1Goal, onPlayer2Goal);
         
         // Ball will eventually be created once two players join.
         this.ball = addBall(this.world);
