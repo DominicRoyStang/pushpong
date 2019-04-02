@@ -1,5 +1,5 @@
 import colors from "../utils/colors"
-import {canvasHeight} from "../utils/dimensions"
+import {canvasHeight, canvasWidth} from "../utils/dimensions"
 
 /*
  * Takes a p5 instance and a p2 circle body, and draws it to the canvas in the desired color.
@@ -37,6 +37,23 @@ const drawRectangle = (p, body, color = colors.defaultColor) => {
 }
 
 /*
+ * Takes a p5 instance and a p2 plane body, and draws it to the canvas in the desired color.
+ */
+const drawLine = (p, body, color = colors.defaultColor) => {
+    const [x, y] = body.interpolatedPosition;
+    const angle = body.interpolatedAngle;
+    p.push();
+    p.stroke(color);
+    p.strokeWeight(2);
+    // have to do canvas height - y because p5 (canvas) uses top left corner as (0,0)
+    // whereas p2 (physics) uses the bottom left corner as (0,0)
+    p.translate(x, canvasHeight - y);
+    p.rotate(-angle);
+    p.line(-canvasWidth, 0, canvasWidth, 0); //line length is 2*canvasWidth
+    p.pop();
+}
+
+/*
  * Takes a p5 instance and a p2 convex body, and draws it to the canvas in the desired color.
  */
 const drawConvex = (p, body, color = colors.defaultColor) => {
@@ -61,5 +78,6 @@ const drawConvex = (p, body, color = colors.defaultColor) => {
 export {
     drawCircle,
     drawConvex,
+    drawLine,
     drawRectangle
 };
