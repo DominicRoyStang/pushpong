@@ -1,6 +1,8 @@
 # Project Description
 **Push Pong** is a multiplayer version of the classic game _pong_ that has a few unique tweaks!
-Try it out now at  [pushpong.xyz](http://www.pushpong.xyz)
+Try it out now at [pushpong.xyz](http://www.pushpong.xyz)
+
+_The site is currently **OFFLINE** for cost saving purposes._
 
 # Requirements
 - A modern web browser
