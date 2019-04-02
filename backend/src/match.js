@@ -14,9 +14,9 @@ class Match {
     }
 
     removePlayer(id) {
-        if (id === this.player1.id) {
+        if (this.player1 && id === this.player1.id) {
             this.player1 = null;
-        } else if (id === this.player2.id) {
+        } else if (this.player2 && id === this.player2.id) {
             this.player2 = null;
         }
 
