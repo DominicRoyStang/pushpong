@@ -13,13 +13,10 @@ export default class Game {
         player2Score: 0
     }
 
+    world = new World({gravity: [0, 0]});
     socket = io.connect(BACKEND_URL, {path: "/game-socket"});
 
     constructor() {
-        this.world = new World({
-            gravity: [0, 0]
-        });
-
         // create objects
         worldSetup(this.world, this.onPlayer1Goal, this.onPlayer2Goal);
         
@@ -29,8 +26,10 @@ export default class Game {
         this.controls = new Controls(this.onControlChange);
         this.opponentControls = new Controls(() => {}, opponentControls);
 
+        // Prepare sockets
         this.socket.on("player-number", (value) => {
-            this.playerNumber = parseInt(value);
+            console.log(`Player number: ${value}`);
+            this.playerNumber = value
             switch(this.playerNumber) {
                 case 1:
                     this.controls.updateControls(player1DefaultControls);
@@ -50,8 +49,8 @@ export default class Game {
 
     setUpWorld() {
         // Create players
-        const player1 = addPlayer(this.world, 0);
-        const player2 = addPlayer(this.world, 1);
+        const player1 = addPlayer(this.world, 1);
+        const player2 = addPlayer(this.world, 2);
         runEngine(this.world);
 
         // Update the character controller after each physics tick.

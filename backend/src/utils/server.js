@@ -17,7 +17,7 @@ const normalizePort = (val) => {
 }
 
 /* Event listener for HTTP server "error" event. */
-const onError = (error) => {
+const onError = (port) => (error) => {
     if (error.syscall !== "listen") {
         throw error;
     }
