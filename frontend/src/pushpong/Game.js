@@ -3,7 +3,7 @@ import {World} from "p2";
 import Controls, {player1DefaultControls, player2DefaultControls, opponentControls} from "./controls";
 import {BACKEND_URL} from "config";
 //import {canvasHeight} from "./utils/dimensions";
-import {worldSetup, addBall, addPlayer} from "./worldSetup";
+import {worldSetup, addBall, addPlayer, runEngine} from "./worldSetup";
 
 export default class Game {
 
@@ -13,37 +13,29 @@ export default class Game {
         player2Score: 0
     }
 
+    socket = io.connect(BACKEND_URL, {path: "/game-socket"});
+
     constructor() {
         this.world = new World({
             gravity: [0, 0]
         });
 
-        // Create boundaries
-        const onPlayer1Goal = () => {
-            this.state.player1Score++;
-            console.log("player 1 scored");
-        };
-        const onPlayer2Goal = () => {
-            this.state.player2Score++;
-            console.log("player 2 scored");
-        };
-        worldSetup(this.world, onPlayer1Goal, onPlayer2Goal);
+        // create objects
+        worldSetup(this.world, this.onPlayer1Goal, this.onPlayer2Goal);
         
         // Ball will eventually be created once two players join.
         this.ball = addBall(this.world);
 
-        this.socket = io.connect(BACKEND_URL, {path: "/game-socket"});
-
-        this.controls = new Controls(this.onControlChange.bind(this), player1DefaultControls);
+        this.controls = new Controls(this.onControlChange);
         this.opponentControls = new Controls(() => {}, opponentControls);
 
         this.socket.on("player-number", (value) => {
-            switch(value) {
-                case "1":
-                    this.playerNumber = 1;
+            this.playerNumber = parseInt(value);
+            switch(this.playerNumber) {
+                case 1:
+                    this.controls.updateControls(player1DefaultControls);
                     break;
-                case "2":
-                    this.playerNumber = 2;
+                case 2:
                     this.controls.updateControls(player2DefaultControls);
                     break;
                 default:
@@ -60,7 +52,7 @@ export default class Game {
         // Create players
         const player1 = addPlayer(this.world, 0);
         const player2 = addPlayer(this.world, 1);
-        this.runEngine(this.world);
+        runEngine(this.world);
 
         // Update the character controller after each physics tick.
         this.world.on('postStep', () => {
@@ -160,25 +152,17 @@ export default class Game {
         });
     }
 
+    onPlayer1Goal = () => {
+        this.state.player1Score++;
+        console.log("player 1 scored");
+    };
+
+    onPlayer2Goal = () => {
+        this.state.player2Score++;
+        console.log("player 2 scored");
+    };
+
     onControlChange = (value) => {
         this.socket.emit("control", value);
     }
-
-    // Runs the engine at a framerate-independent speed.
-    runEngine(world) {
-        let maxSubSteps = 10;
-        let fixedTimeStep = 1/60;
-        let lastTimeSeconds;
-        const animate = (t) => {
-            requestAnimationFrame(animate);
-            const timeSeconds = t/1000;
-            lastTimeSeconds = lastTimeSeconds || timeSeconds;
-            const timeSinceLastCall = timeSeconds - lastTimeSeconds;
-            world.step(fixedTimeStep, timeSinceLastCall, maxSubSteps);
-        }
-        requestAnimationFrame(animate);
-    }
-
-    //onMouseUp = (mouseEvent) => addBall(this.world, this.p5.mouseX, canvasHeight - this.p5.mouseY);
-
 }

@@ -15,8 +15,8 @@ export const player1DefaultControls = {
 };
 
 export const player2DefaultControls = {
-    left_keys: [KEY_ARROW_RIGHT, KEY_ARROW_DOWN, KEY_D, KEY_S],
-    right_keys: [KEY_ARROW_LEFT, KEY_ARROW_UP, KEY_A, KEY_W],
+    left_keys: [KEY_ARROW_LEFT, KEY_ARROW_DOWN, KEY_A, KEY_S],
+    right_keys: [KEY_ARROW_RIGHT, KEY_ARROW_UP, KEY_D, KEY_W],
     boost_keys: [KEY_SPACEBAR]
 };
 

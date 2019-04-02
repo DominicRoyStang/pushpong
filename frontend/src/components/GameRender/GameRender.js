@@ -25,7 +25,7 @@ export default class GameRender extends React.Component {
                 p.noStroke();
                 p.angleMode(p.RADIANS);
                 p.rectMode(p.CENTER);
-                p.textAlign(p.CENTER);
+                p.textAlign(p.CENTER, p.CENTER);
                 p.textSize(28);
             };
 
@@ -34,6 +34,10 @@ export default class GameRender extends React.Component {
                 
                 let score = `Score: ${this.game.state.player1Score} - ${this.game.state.player2Score}`;
                 p.text(score, canvasWidth/2, p.textAscent());
+
+                p.push();
+                    p.text("Waiting for opponent", canvasWidth/2, canvasHeight/2);
+                p.pop();
                 
                 for (const body of this.world.bodies) {
                     body.render(p);
