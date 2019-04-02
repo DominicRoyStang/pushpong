@@ -87,7 +87,6 @@ const setupSensors = (world, onLeftActive, onRightActive) => {
     world.addBody(rightSensor);
 
     world.on("endContact", (event) => {
-        console.log(event);
         if (event.bodyA === leftSensor || event.bodyB === leftSensor) {
             onLeftActive();
         }
@@ -95,4 +94,19 @@ const setupSensors = (world, onLeftActive, onRightActive) => {
             onRightActive();
         }
     });
+}
+
+// Runs the engine at a framerate-independent speed.
+export const runEngine = (world) => {
+    let maxSubSteps = 10;
+    let fixedTimeStep = 1/60;
+    let lastTimeSeconds;
+    const animate = (t) => {
+        requestAnimationFrame(animate);
+        const timeSeconds = t/1000;
+        lastTimeSeconds = lastTimeSeconds || timeSeconds;
+        const timeSinceLastCall = timeSeconds - lastTimeSeconds;
+        world.step(fixedTimeStep, timeSinceLastCall, maxSubSteps);
+    }
+    requestAnimationFrame(animate);
 }
