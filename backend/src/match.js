@@ -1,11 +1,14 @@
 const uuidv4 = require("uuid/v4");
 const StateMachine = require('javascript-state-machine');
+const logger = require("utils/logger");
+const {createLogger, transports} = require("winston");
 
 class Match {
     constructor() {
         this.id = uuidv4();
         this.player1 = null;
         this.player2 = null;
+
         const init = "created";
         const transitions = [
             {name: "join", from: "created", to: "waiting"},
@@ -19,10 +22,13 @@ class Match {
         ];
         const methods = {
             onEnterState: (lifecycle) => {
-                console.log("Enter:" + lifecycle.to);
+                logger.info({message: `Enter State: ${lifecycle.to}`, match: this.id});
+            },
+            onEnterEmpty: () => {
+                this.logMatch();
             },
             onInvalidTransition: (transition, from, to) => {
-                throw new Exception(`Invalid transition ${transition} from ${from} to ${to}`);
+                logger.error({message:`Invalid transition "${transition}" from "${from}" to "${to}"`, match: this.id});
             }
         };
         this.fsm = new StateMachine({init, transitions, methods});
@@ -50,6 +56,32 @@ class Match {
 
     getState() {
         return this.fsm.state;
+    }
+
+    logMatch() {
+        const options = {
+            from: new Date() - (60 * 60 * 1000),  //logs from the last hour
+            until: new Date(),
+            order: "desc"
+        }
+
+        logger.query(options, (err, results) => {
+            if(err) {
+                throw err;
+            }
+            // grab logs from this match
+            const matchLogs = results.file.filter((log) => log.match == this.id);
+            // A bit of a hack, but convenient for now: The following creates a new logger.
+            // The logger writes all logs from this game to a new log file.
+            const matchLogger = createLogger({
+                transports: [
+                    new transports.File({
+                        filename: `logs/matches/${this.id}.log.json`
+                    })
+                ]
+            });
+            matchLogger.info(matchLogs);
+        });
     }
 }
 
