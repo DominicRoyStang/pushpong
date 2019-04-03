@@ -1,16 +1,31 @@
 const uuidv4 = require("uuid/v4");
-
-const WAITING_FOR_PLAYERS = "WAITING";
-const STARTED = "STARTED";
-const ENDED = "ENDED";
-const EMPTY = "EMPTY"; // empty matches will get deleted
+const StateMachine = require('javascript-state-machine');
 
 class Match {
     constructor() {
         this.id = uuidv4();
-        this.player1 = null; //new Player(id);
+        this.player1 = null;
         this.player2 = null;
-        this.status = WAITING_FOR_PLAYERS;
+        const init = "created";
+        const transitions = [
+            {name: "join", from: "created", to: "waiting"},
+            {name: "join", from: "waiting", to: "countdown"},
+            {name: "start", from: "countdown", to: "started"},
+            {name: "end", from: "started", to: "ended"},
+            {name: "leave", from: "waiting", to: "empty"},
+            {name: "leave", from: "countdown", to: "waiting"},
+            {name: "leave", from: "started", to: "ended"},
+            {name: "leave", from: "ended", to: () => this.player1 || this.player2 ? "ended" : "empty"}
+        ];
+        const methods = {
+            onEnterState: (lifecycle) => {
+                console.log("Enter:" + lifecycle.to);
+            },
+            onInvalidTransition: (transition, from, to) => {
+                throw new Exception(`Invalid transition ${transition} from ${from} to ${to}`);
+            }
+        };
+        this.fsm = new StateMachine({init, transitions, methods});
     }
 
     removePlayer(id) {
@@ -20,7 +35,7 @@ class Match {
             this.player2 = null;
         }
 
-        this.updateStatus();
+        this.fsm.leave();
     }
 
     addPlayer(id) {
@@ -30,26 +45,13 @@ class Match {
             this.player2 = new Player(id);
         }
 
-        this.updateStatus();
-        console.log(`player 1: ${this.player1}, player2: ${this.player2}, STATUS: ${this.status}`);
+        this.fsm.join();
     }
 
-    updateStatus() {
-        if (!this.player1 && !this.player2) {
-            this.status = EMPTY;
-        } else if (!this.player1 || !this.player2) {
-            this.status = WAITING_FOR_PLAYERS;
-        } else if (this.player1 && this.player2) {
-            this.status = STARTED;
-        }
+    getState() {
+        return this.fsm.state;
     }
 }
-
-// Append constants to the object so that they can be exported with it and accessible under the Match namespace.
-Match.WAITING_FOR_PLAYERS = "WAITING";
-Match.STARTED = "STARTED";
-Match.ENDED = "ENDED";
-Match.EMPTY = "EMPTY"; // empty matches will get deleted
 
 class Player {
     constructor(id) {
