@@ -2,7 +2,6 @@ import io from "socket.io-client";
 import {World} from "p2";
 import Controls, {player1DefaultControls, player2DefaultControls, opponentControls} from "./controls";
 import {BACKEND_URL} from "config";
-//import {canvasHeight} from "./utils/dimensions";
 import {worldSetup, addBall, addPlayer, runEngine} from "./worldSetup";
 
 export default class Game {

@@ -1,6 +1,7 @@
 const app = require("./app");
 const Match = require("./match");
 const {normalizePort, onError, onListening} = require("utils/server");
+const logger = require("utils/logger");
 
 let matches = []; // TODO: use a linkedlist instead (yallist)
 
@@ -41,26 +42,31 @@ const main = () => {
 
             if (match.fsm.is("countdown")) {
                 // Countdown
-                const countdownTime = 5
-                io.in(match.id).emit("countdown", countdownTime);
-                // Start
-                match.fsm.start();
-                setTimeout(() => io.in(match.id).emit("start", "opponent forfeit"), countdownTime);
+                const countdownTimeSeconds = 5
+                io.in(match.id).emit("countdown", countdownTimeSeconds);
+                logger.info({message: "countdown started", match: match.id});
+
+                setTimeout(() => {
+                    // Start (asynchronously) when timer ends
+                    match.fsm.start();
+                    io.in(match.id).emit("start", "opponent forfeit");
+                    logger.info({message: "match started", match: match.id});
+                }, countdownTimeSeconds*1000);
             }
         });
 
         // When a player sends their controls, forward the message to all other players in the room.
         socket.on("control", (data) => {
             socket.to(match.id).emit("opponent-control", data);
+            logger.silly({message: `${playerId} control: ${data}`, match: match.id});
         });
 
         // When a player disconnects, remove him from the room
         socket.on("disconnect", () => {
-            console.log(`${playerId} has disconnected.`);
+            logger.info({message: `${playerId} has disconnected.`, match: match.id});
             match.removePlayer(playerId);
             
             if (match.fsm.is("ended")) {  // if the match was started, set the opponent as winner by forfeit
-                match.status = Match.ENDED;
                 io.in(match.id).emit("match-end", "opponent forfeit");
             }
         });
@@ -87,5 +93,7 @@ const joinMatch = (playerId) => {
     matches.push(match);
     return match;
 }
+
+setInterval(() => {logger.silly("Number of matches: " + matches.length)}, 10000);
 
 main();
