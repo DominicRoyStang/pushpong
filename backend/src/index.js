@@ -2,7 +2,7 @@ const app = require("./app");
 const Match = require("./match");
 const {normalizePort, onError, onListening} = require("utils/server");
 
-let matches = [];
+let matches = []; // TODO: use a linkedlist instead (yallist)
 
 const main = () => {
     const port = normalizePort(process.env.PORT || 5000);
@@ -30,7 +30,6 @@ const main = () => {
         // Create a match and a socket.io room for the match.
         const match = joinMatch(playerId);
         socket.join(match.id);
-        console.log(match.id);
 
         // When the player requests a player number, emit its player number.
         socket.on("player", () => {
@@ -39,51 +38,54 @@ const main = () => {
             } else if (match.player2.id === playerId) {
                 socket.emit("player-number", 2);
             }
+
+            if (match.fsm.is("countdown")) {
+                // Countdown
+                const countdownTime = 5
+                io.in(match.id).emit("countdown", countdownTime);
+                // Start
+                match.fsm.start();
+                setTimeout(() => io.in(match.id).emit("start", "opponent forfeit"), countdownTime);
+            }
         });
 
         // When a player sends their controls, forward the message to all other players in the room.
         socket.on("control", (data) => {
-            console.log(data);
             socket.to(match.id).emit("opponent-control", data);
         });
 
         // When a player disconnects, remove him from the room
         socket.on("disconnect", () => {
             console.log(`${playerId} has disconnected.`);
-            if (match.status === Match.STARTED) {  // if the match was started, set the opponent as winner by forfeit
-                match.status = Match.ENDED;
-                io.in(match).emit("match-end", "opponent forfeit");
-            }
             match.removePlayer(playerId);
-        })
+            
+            if (match.fsm.is("ended")) {  // if the match was started, set the opponent as winner by forfeit
+                match.status = Match.ENDED;
+                io.in(match.id).emit("match-end", "opponent forfeit");
+            }
+        });
     });
 }
 
 const joinMatch = (playerId) => {
     // try to join a match
     for(let i = 0; i < matches.length; i++) {
-        switch(matches[i].status) {
-            case Match.EMPTY:
-                // empty match found, delete match
-                matches.splice(i, 1);
-                i--;
-                break;
-            case Match.WAITING_FOR_PLAYERS:
-                matches[i].addPlayer(playerId);
-                return matches[i];
-            default:
-                break;
+        const match = matches[i]
+        if (match.fsm.is("empty")) {
+            // empty match found, delete match
+            matches.splice(i, 1);
+            i--;
+        } else if (match.fsm.is("waiting")) {
+            match.addPlayer(playerId);
+            return match;
         }
     }
+
     // no match found, create one
     const match = new Match();
     match.addPlayer(playerId);
     matches.push(match);
     return match;
-}
-
-const leaveMatch = (playerId) => {
-
 }
 
 main();
