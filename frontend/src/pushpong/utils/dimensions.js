@@ -1,6 +1,6 @@
 // canvas
-const canvasHeight = 600;
-const canvasWidth = 900;
+const canvasHeight = 9*32;
+const canvasWidth = 16*32;
 // world
 const boundWidth = 30;
 const paddleOffset = 10;

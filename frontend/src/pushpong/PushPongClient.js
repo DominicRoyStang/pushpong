@@ -6,23 +6,30 @@ import {BACKEND_URL} from "config";
 import {worldSetup, addBall, addPlayer} from "./worldSetup";
 
 export default class PushPongClient {
-    state = {
-        status: "waiting",
-        player1Score: 0,
-        player2Score: 0
-    }
-
     world = new World({gravity: [0, 0]});
     socket = io.connect(BACKEND_URL, {path: "/game-socket"});
 
+    controls = new Controls(this.onControlChange);
+    opponentControls = new Controls(() => {}, opponentControls);
+
+    // Client state setup
+    score = {
+        player1: 0,
+        player2: 0
+    }
     fsm = new StateMachine({
-        init: "waiting",
+        init: "joined",
         transitions: [
-            {name: "receive-number", from: "created", to: "waiting"},
+            {name: "receive-number", from: "joined", to: "waiting"},
         ],
         methods: {
-            onEnterState: (lifecycle) => console.log(`Enter State: ${lifecycle.to}`) 
-        }
+            onEnterState: (lifecycle) => {
+                console.log(`Enter State: ${lifecycle.to}`)
+            },
+            onInvalidTransition: (transition, from, to) => {
+                console.log(`Invalid transition "${transition}" from "${from}" to "${to}"`);
+            }
+        },
     });
 
     constructor() {
@@ -33,9 +40,6 @@ export default class PushPongClient {
         this.ball = addBall(this.world);
         const player1 = addPlayer(this.world, 1);
         const player2 = addPlayer(this.world, 2);
-
-        this.controls = new Controls(this.onControlChange);
-        this.opponentControls = new Controls(() => {}, opponentControls);
 
         // Prepare sockets
         this.socket.on("player-number", (playerNumber) => {
@@ -104,12 +108,12 @@ export default class PushPongClient {
     };
 
     onPlayer1Goal = () => {
-        this.state.player1Score++;
+        this.score.player1++;
         console.log("player 1 scored");
     };
 
     onPlayer2Goal = () => {
-        this.state.player2Score++;
+        this.score.player2++;
         console.log("player 2 scored");
     };
 

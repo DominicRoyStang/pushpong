@@ -28,7 +28,7 @@ export const opponentControls = {
 
 export default class Controls {
 
-    constructor(onChange, control_profile=player1DefaultControls) {
+    constructor(onChange, control_profile = player1DefaultControls) {
         this.controls = {
             LEFT: control_profile.left_keys,
             RIGHT: control_profile.right_keys,
