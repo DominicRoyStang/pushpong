@@ -9,6 +9,7 @@ const GameRender = () => {
     const game = new PushPongClient();
     const world = game.world;
     const controls = game.controls;
+    const fsm = game.fsm;
     const ref = useRef(null);
 
     const createSketch = () => {
@@ -26,12 +27,18 @@ const GameRender = () => {
             p.draw = () => {
                 p.background(colors.background);
 
-                const score = `Score: ${game.score.player1} - ${game.score.player2}`;
-                p.text(score, canvasWidth/2, p.textAscent());
-
-                p.push();
-                p.text("Waiting for opponent", canvasWidth/2, canvasHeight/2);
-                p.pop();
+                switch (fsm.state) {
+                    case "joined":
+                    case "waiting":
+                        p.text("Waiting for opponent", canvasWidth/2, canvasHeight/2);
+                        break;
+                    case "countdown":
+                        p.text(`${game.timer}`, canvasWidth/2, canvasHeight/2);
+                        break;
+                    default:
+                        const score = `Score: ${game.score.player1} - ${game.score.player2}`;
+                        p.text(score, canvasWidth/2, p.textAscent());
+                }
 
                 for (const body of world.bodies) {
                     body.render(p);

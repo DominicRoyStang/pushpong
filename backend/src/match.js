@@ -1,6 +1,7 @@
 const uuidv4 = require("uuid/v4");
 const StateMachine = require('javascript-state-machine');
 const logger = require("utils/logger");
+const {getRandomInArray} = require("utils/math");
 const {createLogger, transports} = require("winston");
 
 class Match {
@@ -8,14 +9,15 @@ class Match {
         this.id = uuidv4();
         this.player1 = null;
         this.player2 = null;
+        this.host = null;
 
         const init = "created";
         const transitions = [
-            {name: "join", from: "created", to: "waiting"},
-            {name: "join", from: "waiting", to: "countdown"},
+            {name: "ready", from: "created", to: "waiting"},
+            {name: "ready", from: "waiting", to: "countdown"},
             {name: "start", from: "countdown", to: "started"},
             {name: "end", from: "started", to: "ended"},
-            {name: "leave", from: "waiting", to: "empty"},
+            {name: "leave", from: ["waiting", "created"], to: "empty"},
             {name: "leave", from: "countdown", to: "waiting"},
             {name: "leave", from: "started", to: "ended"},
             {name: "leave", from: "ended", to: () => this.player1 || this.player2 ? "ended" : "empty"}
@@ -26,6 +28,10 @@ class Match {
             },
             onEnterEmpty: () => {
                 this.logMatch();
+            },
+            onEnterCountdown: () => {
+                this.host = getRandomInArray([1, 2]) === 1 ? this.player1 : this.player2;
+                logger.info({message: `Selected host: ${this.host.id}`});
             },
             onInvalidTransition: (transition, from, to) => {
                 logger.error({message:`Invalid transition "${transition}" from "${from}" to "${to}"`, match: this.id});
@@ -40,8 +46,6 @@ class Match {
         } else if (this.player2 && id === this.player2.id) {
             this.player2 = null;
         }
-
-        this.fsm.leave();
     }
 
     addPlayer(id) {
@@ -50,8 +54,6 @@ class Match {
         } else if (!this.player2) {
             this.player2 = new Player(id);
         }
-
-        this.fsm.join();
     }
 
     getState() {

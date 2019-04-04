@@ -32,22 +32,24 @@ const main = () => {
         const match = joinMatch(playerId);
         socket.join(match.id);
 
-        // When the player requests a player number, emit its player number.
-        socket.on("player", () => {
+        // When the player is ready, emit its player number.
+        socket.on("ready", () => {
             if (match.player1.id === playerId) {
                 socket.emit("player-number", 1);
             } else if (match.player2.id === playerId) {
                 socket.emit("player-number", 2);
             }
 
+            match.fsm.ready();
+
             if (match.fsm.is("countdown")) {
                 // Countdown
-                const countdownTimeSeconds = 5
+                const countdownTimeSeconds = 10;
                 io.in(match.id).emit("countdown", countdownTimeSeconds);
                 logger.info({message: "countdown started", match: match.id});
-
+    
+                // Start (asynchronously) when timer ends
                 setTimeout(() => {
-                    // Start (asynchronously) when timer ends
                     match.fsm.start();
                     io.in(match.id).emit("start", "opponent forfeit");
                     logger.info({message: "match started", match: match.id});
@@ -65,6 +67,8 @@ const main = () => {
         socket.on("disconnect", () => {
             logger.info({message: `${playerId} has disconnected.`, match: match.id});
             match.removePlayer(playerId);
+
+            match.fsm.leave();
             
             if (match.fsm.is("ended")) {  // if the match was started, set the opponent as winner by forfeit
                 io.in(match.id).emit("match-end", "opponent forfeit");
