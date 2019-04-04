@@ -36,8 +36,14 @@ export default class PushPongClient {
                 onEnterCountdown: (lifecycle, time) => {
                     this.onCountdown(time);
                 },
-                onStart: (lifecycle) => {
+                onEnterStart: (lifecycle) => {
                     this.onStart();
+                },
+                onAfterGoal: (lifecycle, newScore) => {
+                    this.onGoal(newScore);
+                },
+                onEnterEnd: (lifecycle) => {
+
                 },
                 onInvalidTransition: (transition, from, to) => {
                     console.log(`Invalid transition "${transition}" from "${from}" to "${to}"`);
@@ -80,13 +86,9 @@ export default class PushPongClient {
             this.fsm.start();
         });
 
-        this.socket.on("goal", (playerNumber) => {
-            if (playerNumber === 1) {
-                this.onPlayer1Goal();
-            } else if (playerNumber === 2) {
-                this.onPlayer2Goal();
-            }
-        })
+        this.socket.on("goal", (newScore) => {
+            this.fsm.goal(newScore);
+        });
     }
 
     /* Sets p2 world events to move players at each physics tick*/
@@ -118,8 +120,6 @@ export default class PushPongClient {
                 this.opponent.bumper.applyForceLocal([0, force]);
             }
         });
-
-        console.log(this.world);
     };
 
     /* Sets control settings depending on the player number the client is given by the server */
@@ -146,13 +146,11 @@ export default class PushPongClient {
     };
 
     onPlayer1Goal = () => {
-        this.score.player1++;
-        console.log("player 1 scored");
+        this.socket.emit("goal", {player: 1});
     };
 
     onPlayer2Goal = () => {
-        this.score.player2++;
-        console.log("player 2 scored");
+        this.socket.emit("goal", {player: 2});
     };
 
     onControlChange = (value) => {
@@ -166,7 +164,7 @@ export default class PushPongClient {
         console.log(`Player number: ${playerNumber}`);
         this.setUpControls();
         this.setUpControlWorldEvents();
-    }
+    };
 
     onCountdown(time) {
         this.timer = time;
@@ -174,9 +172,17 @@ export default class PushPongClient {
             setTimeout(() => this.timer--, time*1000);
             time--;
         }
-    }
+    };
 
     onStart() {
         // do nothing
-    }
+    };
+
+    onGoal(newScore) {
+        this.score.player1 = newScore.player1;
+        this.score.player2 = newScore.player2;
+
+        this.ball = addBall(this.world);
+        this.world.toRemove.push(this.ball);
+    };
 }
