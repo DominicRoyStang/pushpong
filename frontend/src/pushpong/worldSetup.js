@@ -21,6 +21,9 @@ export const worldSetup = (world, onPlayer1Goal, onPlayer2Goal) => {
     // Add bodies to world
     world.addBody(ground);
     world.addBody(ceiling);
+
+    // Run the physics engine
+    runEngine(world);
 };
 
 export const addBall = (world, x = paddleOffset*5.5, y = canvasHeight/2) => {
@@ -97,7 +100,7 @@ const setupSensors = (world, onLeftActive, onRightActive) => {
 }
 
 // Runs the engine at a framerate-independent speed.
-export const runEngine = (world) => {
+const runEngine = (world) => {
     let maxSubSteps = 10;
     let fixedTimeStep = 1/60;
     let lastTimeSeconds;
