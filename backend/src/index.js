@@ -34,9 +34,9 @@ const main = () => {
 
         // When the player is ready, emit its player number.
         socket.on("ready", () => {
-            if (match.player1.id === playerId) {
+            if (match.player1 && match.player1.id === playerId) {
                 socket.emit("player-number", 1);
-            } else if (match.player2.id === playerId) {
+            } else if (match.player2 && match.player2.id === playerId) {
                 socket.emit("player-number", 2);
             }
 
@@ -44,7 +44,7 @@ const main = () => {
 
             if (match.fsm.is("countdown")) {
                 // Countdown
-                const countdownTimeSeconds = 10;
+                const countdownTimeSeconds = 5;
                 io.in(match.id).emit("countdown", countdownTimeSeconds);
                 logger.info({message: "countdown started", match: match.id});
     
@@ -55,6 +55,24 @@ const main = () => {
                     logger.info({message: "match started", match: match.id});
                 }, countdownTimeSeconds*1000);
             }
+        });
+
+
+        socket.on("goal", (data) => {
+            console.log(`playerid: ${playerId}, match host id: ${match.host.id}`);
+            if (playerId !== match.host.id) {
+                return;
+            }
+
+            const player = match.getPlayerByNumber(data.player);
+            player.points += 1;
+            if (player.points >= 7) {
+                match.fsm.end();
+            } else {
+                io.in(match.id).emit("goal", match.getScore());
+            }
+
+            logger.info({message: `goal scored by: ${data.player}`, match: match.id});
         });
 
         // When a player sends their controls, forward the message to all other players in the room.

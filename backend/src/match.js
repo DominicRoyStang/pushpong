@@ -30,15 +30,15 @@ class Match {
                 this.logMatch();
             },
             onEnterCountdown: () => {
-                this.host = getRandomInArray([1, 2]) === 1 ? this.player1 : this.player2;
-                logger.info({message: `Selected host: ${this.host.id}`});
+                this.host = getRandomInArray([this.player1, this.player2]);
+                logger.info({message: `Selected host: ${this.host.id}`, match: this.id});
             },
             onInvalidTransition: (transition, from, to) => {
                 logger.error({message:`Invalid transition "${transition}" from "${from}" to "${to}"`, match: this.id});
             }
         };
         this.fsm = new StateMachine({init, transitions, methods});
-    }
+    };
 
     removePlayer(id) {
         if (this.player1 && id === this.player1.id) {
@@ -46,7 +46,7 @@ class Match {
         } else if (this.player2 && id === this.player2.id) {
             this.player2 = null;
         }
-    }
+    };
 
     addPlayer(id) {
         if (!this.player1) {
@@ -54,10 +54,36 @@ class Match {
         } else if (!this.player2) {
             this.player2 = new Player(id);
         }
-    }
+    };
 
     getState() {
         return this.fsm.state;
+    };
+
+    getScore() {
+        return {
+            player1: this.player1.points,
+            player2: this.player2.points
+        };
+    };
+
+    getPlayerById(id) {
+        const players = [this.player1, this.player2];
+        for (player of players) {
+            if (player.id === id) {
+                return player;
+            }
+        }
+        logger.error({message: `Received invalid player id ${id}`, match: this.id});
+    };
+
+    getPlayerByNumber(num) {
+        if (num === 1) {
+            return this.player1;
+        } else if (num === 2) {
+            return this.player2;
+        }
+        logger.error({message: `Received invalid player number ${num}`, match: this.num});
     }
 
     logMatch() {
@@ -84,7 +110,7 @@ class Match {
             });
             matchLogger.info(matchLogs);
         });
-    }
+    };
 }
 
 class Player {
