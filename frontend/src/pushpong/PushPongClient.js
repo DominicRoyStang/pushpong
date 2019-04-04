@@ -89,6 +89,10 @@ export default class PushPongClient {
         this.socket.on("goal", (newScore) => {
             this.fsm.goal(newScore);
         });
+
+        this.socket.on("end", () => {
+            this.fsm.end();
+        });
     }
 
     /* Sets p2 world events to move players at each physics tick*/

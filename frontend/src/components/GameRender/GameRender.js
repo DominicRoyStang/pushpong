@@ -36,6 +36,8 @@ const GameRender = () => {
                         p.text(`${game.timer}`, canvasWidth/2, canvasHeight/2);
                         break;
                     case "ended":
+                        const finalScore = `Final Score: ${game.score.player1} - ${game.score.player2}`;
+                        p.text(finalScore, canvasWidth/2, p.textAscent());
                         const player1Winner = game.score.player1 >= 7;
                         const player2Winner = game.score.player2 >= 7;
                         if (!player1Winner >= 7 && !player2Winner >= 7) {
@@ -43,7 +45,7 @@ const GameRender = () => {
                         } else if ((player1Winner && game.playerNumber === 1) || (player2Winner && game.playerNumber === 2)) {
                             p.text("YOU WIN", canvasWidth/2, canvasHeight/2);
                         } else {
-                            p.text("YOU LOSE");
+                            p.text("YOU LOSE", canvasWidth/2, canvasHeight/2);
                         }
                         break;
                     default:
