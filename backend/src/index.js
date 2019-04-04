@@ -66,13 +66,13 @@ const main = () => {
 
             const player = match.getPlayerByNumber(data.player);
             player.points += 1;
+            io.in(match.id).emit("goal", match.getScore());
+            logger.info({message: `goal scored by: ${data.player}`, match: match.id});
+
             if (player.points >= 7) {
                 match.fsm.end();
-            } else {
-                io.in(match.id).emit("goal", match.getScore());
+                io.in(match.id).emit("end");
             }
-
-            logger.info({message: `goal scored by: ${data.player}`, match: match.id});
         });
 
         // When a player sends their controls, forward the message to all other players in the room.
