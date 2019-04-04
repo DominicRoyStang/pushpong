@@ -183,6 +183,5 @@ export default class PushPongClient {
         this.score.player2 = newScore.player2;
 
         this.ball = addBall(this.world);
-        this.world.toRemove.push(this.ball);
     };
 }

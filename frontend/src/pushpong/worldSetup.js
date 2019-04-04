@@ -6,7 +6,6 @@ import {groups, masks} from "./utils/collisions";
 export const worldSetup = (world, onPlayer1Goal, onPlayer2Goal) => {
     world.defaultContactMaterial.restitution = 1;
     world.defaultContactMaterial.contactSkinSize = 0;
-    world.toRemove = [];
 
     // Create walls
     const ground = new Boundary({
@@ -111,9 +110,6 @@ const runEngine = (world) => {
         lastTimeSeconds = lastTimeSeconds || timeSeconds;
         const timeSinceLastCall = timeSeconds - lastTimeSeconds;
         world.step(fixedTimeStep, timeSinceLastCall, maxSubSteps);
-        while (world.toRemove.length !== 0) {
-            world.removeBody(world.toRemove.pop());
-        }
     }
     requestAnimationFrame(animate);
 }
