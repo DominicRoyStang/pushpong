@@ -2,17 +2,16 @@ import React from "react";
 import P5 from "p5";
 import {canvasWidth, canvasHeight} from "pushpong/utils/dimensions";
 import colors from "pushpong/utils/colors";
-import Game from "pushpong";
+import PushPongClient from "pushpong";
 import "./GameRender.scss";
 
 export default class GameRender extends React.Component {
 
     constructor() {
         super();
-        const game = new Game();
-        this.game = game;
-        this.world = game.world;
-        this.controls = game.controls;
+        this.game = new PushPongClient();
+        this.world = this.game.world;
+        this.controls = this.game.controls;
     }
 
     componentDidMount() {
@@ -36,7 +35,7 @@ export default class GameRender extends React.Component {
                 p.text(score, canvasWidth/2, p.textAscent());
 
                 p.push();
-                    p.text("Waiting for opponent", canvasWidth/2, canvasHeight/2);
+                p.text("Waiting for opponent", canvasWidth/2, canvasHeight/2);
                 p.pop();
                 
                 for (const body of this.world.bodies) {

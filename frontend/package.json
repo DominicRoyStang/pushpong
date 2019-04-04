@@ -7,6 +7,7 @@
     "bezier-js": "^2.3.2",
     "express": "^4.16.4",
     "history": "^4.7.2",
+    "javascript-state-machine": "^3.1.0",
     "morgan": "^1.9.1",
     "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",

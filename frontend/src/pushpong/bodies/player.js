@@ -63,7 +63,27 @@ export default class Player {
         for (const constraint of this.constraints) {
             world.addConstraint(constraint);
         }
-        
+    }
+
+    setPosition(x, y) {
+        // Get the bumper's position relative to the paddle
+        let bumperShift = [this.bumper.position[0] - this.paddle.position[0], this.bumper.position[1] - this.paddle.position[1]]; 
+
+        // Set the new positions
+        this.paddle.position = [x, y];
+        this.bumper.position = [x + bumperShift[0], y + bumperShift[1]];
+    }
+
+    setVelocity(x, y) {
+        // Set the paddle's horizontal velocity to x, and vertical velocity to y
+        const paddleVelocity = [x, y];
+        this.paddle.vectorToWorldFrame(this.paddle.velocity, paddleVelocity);
+
+        // Set the bumper's horizontal velocity to x, but keep its vertical velocity
+        let currentLocal = [x, y];
+        this.bumper.vectorToLocalFrame(currentLocal, this.bumper.velocity);
+        let desiredLocal = [x, currentLocal[1]];
+        this.bumper.vectorToWorldFrame(this.bumper.velocity, desiredLocal);
     }
 }
 

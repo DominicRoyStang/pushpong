@@ -1,3 +1,3 @@
-import Game from "./Game";
+import {default as PushPongClient} from "./PushPongClient";
 
-export default Game;
+export default PushPongClient;
