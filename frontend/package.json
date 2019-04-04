@@ -13,8 +13,8 @@
     "npm-run-all": "^4.1.5",
     "p2": "git://github.com/schteppe/p2.js.git#2beb2750",
     "p5": "^0.7.3",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
     "socket.io-client": "^2.2.0"

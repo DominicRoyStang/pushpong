@@ -1,23 +1,18 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import P5 from "p5";
 import {canvasWidth, canvasHeight} from "pushpong/utils/dimensions";
 import colors from "pushpong/utils/colors";
 import PushPongClient from "pushpong";
 import "./GameRender.scss";
 
-export default class GameRender extends React.Component {
+const GameRender = () => {
+    const game = new PushPongClient();
+    const world = game.world;
+    const controls = game.controls;
+    const ref = useRef(null);
 
-    constructor() {
-        super();
-        this.game = new PushPongClient();
-        this.world = this.game.world;
-        this.controls = this.game.controls;
-    }
-
-    componentDidMount() {
-        // Create sketch
-        const sketch = (p) => {
-
+    const createSketch = () => {
+        return (p) => {
             p.setup = () => {
                 p.createCanvas(canvasWidth, canvasHeight);
                 p.push();
@@ -30,34 +25,37 @@ export default class GameRender extends React.Component {
 
             p.draw = () => {
                 p.background(colors.background);
-                
-                let score = `Score: ${this.game.state.player1Score} - ${this.game.state.player2Score}`;
+
+                const score = `Score: ${game.score.player1} - ${game.score.player2}`;
                 p.text(score, canvasWidth/2, p.textAscent());
 
                 p.push();
                 p.text("Waiting for opponent", canvasWidth/2, canvasHeight/2);
                 p.pop();
-                
-                for (const body of this.world.bodies) {
+
+                for (const body of world.bodies) {
                     body.render(p);
                 }
-                
-                for (const spring of this.world.springs) {
+
+                for (const spring of world.springs) {
                     spring.render(p);
                 }
             };
         };
+    }
 
+    useEffect(() => {
         // Create and autofocus on renderer
-        this.p5 = new P5(sketch, document.getElementById("game-render"));
-        document.getElementById("game-render").focus();
-    }
+        const sketch = createSketch();
+        new P5(sketch, ref.current);
+        ref.current.focus();
+    }, []);
 
-    render() {
-        return (
-            <div id="game-render" tabIndex="0" onKeyDown={this.controls.handleKeyDown} onKeyUp={this.controls.handleKeyUp}>
-                {/* Game will be rendered here when the component mounts. */}
-            </div>
-        );
-    }
+    return (
+        <div id="game-render" tabIndex="0" ref={ref} onKeyDown={controls.handleKeyDown} onKeyUp={controls.handleKeyUp}>
+            {/* Game will be rendered here when the component mounts. */}
+        </div>
+    );
 }
+
+export default GameRender;
