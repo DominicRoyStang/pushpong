@@ -186,6 +186,8 @@ export default class PushPongClient {
         this.score.player1 = newScore.player1;
         this.score.player2 = newScore.player2;
 
-        this.ball = addBall(this.world);
+        if (!(newScore.player1 >= 7 || newScore.player2 >= 7)) { 
+            this.ball = addBall(this.world);
+        }
     };
 }
