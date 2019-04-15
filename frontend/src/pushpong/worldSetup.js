@@ -33,7 +33,12 @@ export const addBall = (world, x = paddleOffset*5.6, y = canvasHeight/2) => {
     });
     world.addBody(ball);
     return ball;
-}
+};
+
+export const resetBall = (ball) => {
+    ball.position = [paddleOffset*5.6, canvasHeight/2];
+    ball.velocity = [0, 0];
+};
 
 export const addPlayer = (world, playerNumber) => {
     const playerPositions = [
