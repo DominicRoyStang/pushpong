@@ -3,6 +3,13 @@ import {Boundary, Ball, GoalSensor, Player} from "./bodies";
 import {rotateAroundAnchor} from "./utils/math";
 import {groups, masks} from "./utils/collisions";
 
+const playerPositions = [
+    {x: paddleOffset, y: canvasHeight/2, angle: -Math.PI/2},
+    {x: canvasWidth - paddleOffset, y: canvasHeight/2, angle: Math.PI/2},
+    {x: canvasWidth/2, y: paddleOffset, angle: 0},
+    {x: canvasWidth/2, y: canvasHeight - paddleOffset, angle: Math.PI}
+];
+
 export const worldSetup = (world, onPlayer1Goal, onPlayer2Goal) => {
     world.defaultContactMaterial.restitution = 1;
     world.defaultContactMaterial.contactSkinSize = 0;
@@ -41,12 +48,6 @@ export const resetBall = (ball) => {
 };
 
 export const addPlayer = (world, playerNumber) => {
-    const playerPositions = [
-        {x: paddleOffset, y: canvasHeight/2, angle: -Math.PI/2},
-        {x: canvasWidth - paddleOffset, y: canvasHeight/2, angle: Math.PI/2},
-        {x: canvasWidth/2, y: paddleOffset, angle: 0},
-        {x: canvasWidth/2, y: canvasHeight - paddleOffset, angle: Math.PI}
-    ];
     const {x, y, angle} = playerPositions[playerNumber - 1];
     const player = new Player(x, y, angle);
 
@@ -58,6 +59,12 @@ export const addPlayer = (world, playerNumber) => {
     player.addToWorld(world);
     return player;
 };
+
+export const resetPlayer = (player, playerNumber) => {
+    const {x, y} = playerPositions[playerNumber - 1];
+    player.setPosition(x, y);
+    player.setVelocity(0, 0);
+}
 
 const createPlayerBounds = (player) => {
     const [paddleX, paddleY] = player.paddle.position;

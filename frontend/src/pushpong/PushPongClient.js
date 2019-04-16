@@ -3,7 +3,7 @@ import StateMachine from 'javascript-state-machine';
 import {World} from "p2";
 import Controls, {player1DefaultControls, player2DefaultControls, opponentControls} from "./controls";
 import {BACKEND_URL} from "config";
-import {worldSetup, addBall, resetBall, addPlayer} from "./worldSetup";
+import {worldSetup, addBall, resetBall, addPlayer, resetPlayer} from "./worldSetup";
 
 export default class PushPongClient {
     world = new World({gravity: [0, 0]});
@@ -187,6 +187,8 @@ export default class PushPongClient {
         this.score.player2 = newScore.player2;
 
         if (newScore.player1 < 7 && newScore.player2 < 7) { 
+            resetPlayer(this.player1, 1);
+            resetPlayer(this.player2, 2);
             resetBall(this.ball);
         }
     };
