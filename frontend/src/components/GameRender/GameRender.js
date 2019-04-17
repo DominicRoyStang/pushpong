@@ -1,8 +1,9 @@
 import React, {useEffect, useRef} from "react";
 import P5 from "p5";
+import PushPongClient from "pushpong";
 import {canvasWidth, canvasHeight} from "pushpong/utils/dimensions";
 import colors from "pushpong/utils/colors";
-import PushPongClient from "pushpong";
+import {writeScore, writeTitle, writeSubtitle} from "pushpong/render/text";
 import "./GameRender.scss";
 
 const GameRender = () => {
@@ -30,29 +31,26 @@ const GameRender = () => {
                 switch (fsm.state) {
                     case "joined":
                     case "waiting":
-                        p.text("Waiting for opponent", canvasWidth/2, canvasHeight/2);
+                        writeTitle(p, "Waiting for opponent");
                         break;
                     case "countdown":
-                        p.text(`${game.timer}`, canvasWidth/2, canvasHeight/2);
+                        writeTitle(p, `${game.timer}`);
                         break;
                     case "ended":
-                        const finalScore = `Final Score: ${game.score.player1} - ${game.score.player2}`;
-                        p.text(finalScore, canvasWidth/2, p.textAscent());
+                        writeScore(p, `Final Score: ${game.score.player1} - ${game.score.player2}`);
                         const player1Winner = game.score.player1 >= 7;
                         const player2Winner = game.score.player2 >= 7;
-                        if (!player1Winner >= 7 && !player2Winner >= 7) {
-                            p.text("YOU WIN\nOpponent Forfeit", canvasWidth/2, canvasHeight/2);
+                        if (!player1Winner && !player2Winner) {
+                            writeTitle(p, "YOU WIN");
+                            writeSubtitle(p, "opponent forfeit");
                         } else if ((player1Winner && game.playerNumber === 1) || (player2Winner && game.playerNumber === 2)) {
-                            p.text("YOU WIN", canvasWidth/2, canvasHeight/2);
+                            writeTitle(p, "YOU WIN");
                         } else if ((player1Winner && game.playerNumber === 2) || (player2Winner && game.playerNumber === 1)) {
-                            p.text("YOU LOSE", canvasWidth/2, canvasHeight/2);
-                        } else {
-                            p.text("Winner by forfeit", canvasWidth/2, canvasHeight/2);
+                            writeTitle(p, "YOU LOSE");
                         }
                         break;
                     default:
-                        const score = `Score: ${game.score.player1} - ${game.score.player2}`;
-                        p.text(score, canvasWidth/2, p.textAscent());
+                        writeScore(p, `Score: ${game.score.player1} - ${game.score.player2}`);
                 }
 
                 for (const body of world.bodies) {

@@ -50,6 +50,10 @@ const main = () => {
     
                 // Start (asynchronously) when timer ends
                 setTimeout(() => {
+                    if (match.fsm.cannot("start")) {
+                        // Player probably disconnected so state changed during countdown
+                        return;
+                    }
                     match.fsm.start();
                     io.in(match.id).emit("start", "opponent forfeit");
                     logger.info({message: "match started", match: match.id});
@@ -71,7 +75,7 @@ const main = () => {
 
             if (player.points >= 7) {
                 match.fsm.end();
-                io.in(match.id).emit("end");
+                io.in(match.id).emit("end", "max score");
             }
         });
 
@@ -88,9 +92,7 @@ const main = () => {
 
             match.fsm.leave();
             
-            if (match.fsm.is("ended")) {  // if the match was started, set the opponent as winner by forfeit
-                io.in(match.id).emit("match-end", "opponent forfeit");
-            }
+            io.in(match.id).emit("opponent-disconnect");
         });
     });
 }

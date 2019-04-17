@@ -24,26 +24,26 @@ export default class PushPongClient {
                 {name: "countdown", from: "waiting", to: "countdown"},
                 {name: "start", from: "countdown", to: "started"},
                 {name: "goal", from: "started", to: "started"},
-                {name: "end", from: "started", to: "ended"}
+                {name: "end", from: "started", to: "ended"},
+                {name: "opponentDisconnect", from: "joined", to: "joined"},
+                {name: "opponentDisconnect", from: ["countdown", "waiting"], to: "waiting"},
+                {name: "opponentDisconnect", from: ["started", "ended"], to: "ended"}
             ],
             methods: {
                 onEnterState: (lifecycle) => {
                     console.log(`Enter State: ${lifecycle.to}`);
                 },
-                onEnterReceiveNumber: (lifecycle, playerNumber) => {
+                onAfterReceiveNumber: (lifecycle, playerNumber) => {
                     this.onReceiveNumber(playerNumber);
                 },
                 onEnterCountdown: (lifecycle, time) => {
                     this.onCountdown(time);
                 },
-                onEnterStart: (lifecycle) => {
+                onEnterStarted: (lifecycle) => {
                     this.onStart();
                 },
                 onAfterGoal: (lifecycle, newScore) => {
                     this.onGoal(newScore);
-                },
-                onEnterEnd: (lifecycle) => {
-
                 },
                 onInvalidTransition: (transition, from, to) => {
                     console.log(`Invalid transition "${transition}" from "${from}" to "${to}"`);
@@ -56,9 +56,7 @@ export default class PushPongClient {
 
         this.controls = new Controls(this.onControlChange);
         this.opponentControls = new Controls(() => {}, opponentControls);
-        
-        // Ball will eventually be created once two players join.
-        this.ball = addBall(this.world);
+
         this.player1 = addPlayer(this.world, 1);
         this.player2 = addPlayer(this.world, 2);
 
@@ -70,29 +68,17 @@ export default class PushPongClient {
     };
 
     setUpSocketEvents() {
-        this.socket.on("player-number", (playerNumber) => {
-            this.playerNumber = playerNumber;
-            console.log(`Player number: ${playerNumber}`);
-            this.setUpControls();
-            this.setUpControlWorldEvents();
-            this.fsm.receiveNumber(playerNumber);
-        });
+        this.socket.on("player-number", playerNumber => this.fsm.receiveNumber(playerNumber));
 
-        this.socket.on("countdown", (time) => {
-            this.fsm.countdown(time);
-        });
+        this.socket.on("countdown", time => this.fsm.countdown(time));
 
-        this.socket.on("start", () => {
-            this.fsm.start();
-        });
+        this.socket.on("start", () => this.fsm.start());
 
-        this.socket.on("goal", (newScore) => {
-            this.fsm.goal(newScore);
-        });
+        this.socket.on("goal", newScore => this.fsm.goal(newScore));
 
-        this.socket.on("end", () => {
-            this.fsm.end();
-        });
+        this.socket.on("end", () => this.fsm.end());
+
+        this.socket.on("opponent-disconnect", () => this.fsm.opponentDisconnect());
     }
 
     /* Sets p2 world events to move players at each physics tick*/
@@ -179,7 +165,7 @@ export default class PushPongClient {
     };
 
     onStart() {
-        // do nothing
+        this.ball = addBall(this.world);
     };
 
     onGoal(newScore) {
