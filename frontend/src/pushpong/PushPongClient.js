@@ -3,7 +3,7 @@ import StateMachine from 'javascript-state-machine';
 import {World} from "p2";
 import Controls, {player1DefaultControls, player2DefaultControls, opponentControls} from "./controls";
 import {BACKEND_URL} from "config";
-import {worldSetup, addBall, resetBall, addPlayer, resetPlayer} from "./worldSetup";
+import {worldSetup, addBall, resetBall, hideBall, addPlayer, resetPlayer} from "./worldSetup";
 
 export default class PushPongClient {
     world = new World({gravity: [0, 0]});
@@ -30,21 +30,12 @@ export default class PushPongClient {
                 {name: "opponentDisconnect", from: ["started", "ended"], to: "ended"}
             ],
             methods: {
-                onEnterState: (lifecycle) => {
-                    console.log(`Enter State: ${lifecycle.to}`);
-                },
-                onAfterReceiveNumber: (lifecycle, playerNumber) => {
-                    this.onReceiveNumber(playerNumber);
-                },
-                onEnterCountdown: (lifecycle, time) => {
-                    this.onCountdown(time);
-                },
-                onEnterStarted: (lifecycle) => {
-                    this.onStart();
-                },
-                onAfterGoal: (lifecycle, newScore) => {
-                    this.onGoal(newScore);
-                },
+                onEnterState: (lifecycle) => console.log(`Enter State: ${lifecycle.to}`),
+                onAfterReceiveNumber: (lifecycle, playerNumber) => this.onReceiveNumber(playerNumber),
+                onEnterCountdown: (lifecycle, time) => this.onCountdown(time),
+                onEnterStarted: () => this.onStart(),
+                onAfterGoal: (lifecycle, newScore) => this.onGoal(newScore),
+                onAfterOpponentDisconnect: () => this.onOpponentDisconnect(),
                 onInvalidTransition: (transition, from, to) => {
                     console.log(`Invalid transition "${transition}" from "${from}" to "${to}"`);
                 }
@@ -57,6 +48,7 @@ export default class PushPongClient {
         this.controls = new Controls(this.onControlChange);
         this.opponentControls = new Controls(() => {}, opponentControls);
 
+        this.ball = addBall(this.world);
         this.player1 = addPlayer(this.world, 1);
         this.player2 = addPlayer(this.world, 2);
 
@@ -69,17 +61,12 @@ export default class PushPongClient {
 
     setUpSocketEvents() {
         this.socket.on("player-number", playerNumber => this.fsm.receiveNumber(playerNumber));
-
         this.socket.on("countdown", time => this.fsm.countdown(time));
-
         this.socket.on("start", () => this.fsm.start());
-
         this.socket.on("goal", newScore => this.fsm.goal(newScore));
-
         this.socket.on("end", () => this.fsm.end());
-
         this.socket.on("opponent-disconnect", () => this.fsm.opponentDisconnect());
-    }
+    };
 
     /* Sets p2 world events to move players at each physics tick*/
     setUpControlWorldEvents() {
@@ -165,7 +152,7 @@ export default class PushPongClient {
     };
 
     onStart() {
-        this.ball = addBall(this.world);
+        resetBall(this.ball);
     };
 
     onGoal(newScore) {
@@ -176,6 +163,12 @@ export default class PushPongClient {
             resetPlayer(this.player1, 1);
             resetPlayer(this.player2, 2);
             resetBall(this.ball);
+        } else {
+            hideBall(this.ball);
         }
     };
+
+    onOpponentDisconnect() {
+        hideBall(this.ball);
+    }
 }

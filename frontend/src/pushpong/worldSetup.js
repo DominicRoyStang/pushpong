@@ -33,7 +33,7 @@ export const worldSetup = (world, onPlayer1Goal, onPlayer2Goal) => {
     runEngine(world);
 };
 
-export const addBall = (world, x = paddleOffset*5.6, y = canvasHeight/2) => {
+export const addBall = (world, x = canvasWidth/2, y = canvasHeight*10) => {
     // Create ball
     const ball = new Ball({
         position: [x, y]
@@ -44,6 +44,11 @@ export const addBall = (world, x = paddleOffset*5.6, y = canvasHeight/2) => {
 
 export const resetBall = (ball) => {
     ball.position = [paddleOffset*5.6, canvasHeight/2];
+    ball.velocity = [0, 0];
+};
+
+export const hideBall = (ball) => {
+    ball.position = [canvasWidth/2, canvasHeight*10];
     ball.velocity = [0, 0];
 };
 
