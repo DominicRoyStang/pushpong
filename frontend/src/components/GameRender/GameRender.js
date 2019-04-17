@@ -44,8 +44,10 @@ const GameRender = () => {
                             p.text("YOU WIN\nOpponent Forfeit", canvasWidth/2, canvasHeight/2);
                         } else if ((player1Winner && game.playerNumber === 1) || (player2Winner && game.playerNumber === 2)) {
                             p.text("YOU WIN", canvasWidth/2, canvasHeight/2);
-                        } else {
+                        } else if ((player1Winner && game.playerNumber === 2) || (player2Winner && game.playerNumber === 1)) {
                             p.text("YOU LOSE", canvasWidth/2, canvasHeight/2);
+                        } else {
+                            p.text("Winner by forfeit", canvasWidth/2, canvasHeight/2);
                         }
                         break;
                     default:
