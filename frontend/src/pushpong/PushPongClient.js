@@ -34,6 +34,7 @@ export default class PushPongClient {
                 onAfterReceiveNumber: (lifecycle, playerNumber) => this.onReceiveNumber(playerNumber),
                 onEnterCountdown: (lifecycle, time) => this.onCountdown(time),
                 onEnterStarted: () => this.onStart(),
+                onEnterEnded: () => this.onEnd(),
                 onAfterGoal: (lifecycle, newScore) => this.onGoal(newScore),
                 onAfterOpponentDisconnect: () => this.onOpponentDisconnect(),
                 onInvalidTransition: (transition, from, to) => {
@@ -159,14 +160,14 @@ export default class PushPongClient {
         this.score.player1 = newScore.player1;
         this.score.player2 = newScore.player2;
 
-        if (newScore.player1 < 7 && newScore.player2 < 7) { 
-            resetPlayer(this.player1, 1);
-            resetPlayer(this.player2, 2);
-            resetBall(this.ball);
-        } else {
-            hideBall(this.ball);
-        }
+        resetPlayer(this.player1, 1);
+        resetPlayer(this.player2, 2);
+        resetBall(this.ball);
     };
+
+    onEnd() {
+        hideBall(this.ball);
+    }
 
     onOpponentDisconnect() {
         hideBall(this.ball);
