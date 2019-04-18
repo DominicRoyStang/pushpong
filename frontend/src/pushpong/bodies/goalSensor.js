@@ -8,7 +8,7 @@ import {groups, masks} from "../utils/collisions";
  */
 export default class GoalSensor extends Body {
 
-    constructor(props, onContact = () => {}, group = groups.defaultGroup, mask = masks.defaultMask) {
+    constructor(props) {
         // set defaults if not specified in props
         props = Object.assign({
             angle: Math.PI/2,
@@ -23,8 +23,8 @@ export default class GoalSensor extends Body {
 
         // add shape
         const shape = new Plane({
-            collisionGroup: group,
-            collisionMask: mask,
+            collisionGroup: groups.defaultGroup,
+            collisionMask: masks.goals,
             sensor: true
         });
         this.addShape(shape);

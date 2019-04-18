@@ -60,6 +60,7 @@ export default class PushPongClient {
         this.socket.emit("ready", "what is my player number?");
     };
 
+    /* Sets up responses to socket.io events */
     setUpSocketEvents() {
         this.socket.on("player-number", playerNumber => this.fsm.receiveNumber(playerNumber));
         this.socket.on("countdown", time => this.fsm.countdown(time));

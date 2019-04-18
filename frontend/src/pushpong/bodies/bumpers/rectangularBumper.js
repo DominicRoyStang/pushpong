@@ -26,7 +26,7 @@ export default class RectangularBumper extends Body {
         
         // add bumper
         const bumper = new Convex({
-            collisionGroup: groups.defaultGroup,
+            collisionGroup: groups.bumpers,
             collisionMask: masks.defaultMask,
             vertices: [[width/2, 0], [width/2, height], [-width/2, height], [-width/2, 0]]
         });

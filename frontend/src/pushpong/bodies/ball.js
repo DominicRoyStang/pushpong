@@ -23,7 +23,7 @@ export default class Ball extends Body {
         
         // add shape
         const shape = new Circle({
-            collisionGroup: groups.defaultGroup,
+            collisionGroup: groups.balls,
             collisionMask: masks.defaultMask,
             radius: radius
         });

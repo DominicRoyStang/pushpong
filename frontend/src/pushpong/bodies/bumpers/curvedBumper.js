@@ -1,4 +1,4 @@
-import {Body, Convex} from "p2";
+import {Body, Convex, Box} from "p2";
 import Bezier from "bezier-js";
 import {canvasHeight, paddleHeight} from "../../utils/dimensions"
 import {drawConvex} from "../../render";
@@ -38,11 +38,27 @@ export default class CurvedBumper extends Body {
         
         // add bumper
         const bumper = new Convex({
-            collisionGroup: groups.defaultGroup,
+            collisionGroup: groups.bumpers,
             collisionMask: masks.defaultMask,
             vertices: vertices
         });
         this.addShape(bumper);
+
+        // add handlebars
+        const leftHandlebar = new Box({
+            collisionGroup: groups.defaultGroup,
+            collisionMask: masks.handlebars,
+            width: paddleHeight,
+            height: height
+        });
+        const rightHandlebar = new Box({
+            collisionGroup: groups.defaultGroup,
+            collisionMask: masks.handlebars,
+            width: paddleHeight,
+            height: height
+        });
+        this.addShape(leftHandlebar, [width/2 + paddleHeight/2 + 1, 0]);
+        this.addShape(rightHandlebar, [-width/2 - paddleHeight/2 - 1, 0]);
     }
 
     render = (p) => drawConvex(p, this, colors.bumper1);
