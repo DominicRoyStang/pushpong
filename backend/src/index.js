@@ -61,10 +61,9 @@ const main = () => {
             }
         });
 
-
         socket.on("goal", (data) => {
             console.log(`playerid: ${playerId}, match host id: ${match.host.id}`);
-            if (playerId !== match.host.id) {
+            if (!match.hotst || playerId !== match.host.id) {
                 return;
             }
 
@@ -83,6 +82,14 @@ const main = () => {
         socket.on("control", (data) => {
             socket.to(match.id).emit("opponent-control", data);
             logger.silly({message: `${playerId} control: ${data}`, match: match.id});
+        });
+
+        socket.on("snapshot", (data) => {
+            if (!match.host || playerId !== match.host.id) { // Don't send ball position if not host
+                data = {player: data.player};
+            }
+            socket.to(match.id).emit("snapshot", data);
+            logger.info({message: `${playerId} snapshot.`, match: match.id});
         });
 
         // When a player disconnects, remove him from the room

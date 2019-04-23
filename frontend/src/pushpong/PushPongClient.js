@@ -4,6 +4,7 @@ import {World} from "p2";
 import Controls, {player1DefaultControls, player2DefaultControls, opponentControls} from "./controls";
 import {BACKEND_URL} from "config";
 import {worldSetup, addBall, resetBall, hideBall, addPlayer, resetPlayer} from "./worldSetup";
+import {createSnapshot} from "./snapshots";
 
 export default class PushPongClient {
     world = new World({gravity: [0, 0]});
@@ -13,7 +14,7 @@ export default class PushPongClient {
     score = {
         player1: 0,
         player2: 0
-    }
+    };
 
     constructor() {
         // Create the finite state machine
@@ -68,17 +69,18 @@ export default class PushPongClient {
         this.socket.on("goal", newScore => this.fsm.goal(newScore));
         this.socket.on("end", () => this.fsm.end());
         this.socket.on("opponent-disconnect", () => this.fsm.opponentDisconnect());
+        this.socket.on("snapshot", message => this.onSnapshot(message));
     };
 
     /* Sets p2 world events to move players at each physics tick*/
     setUpControlWorldEvents() {
         this.world.on('postStep', () => {
             if (this.controls.LEFT) {
-                this.player.setVelocity(-30, 0);
+                this.player.setVelocity([-30, 0]);
             } else if (this.controls.RIGHT) {
-                this.player.setVelocity(30, 0);
+                this.player.setVelocity([30, 0]);
             } else {
-                this.player.setVelocity(0, 0);
+                this.player.setVelocity([0, 0]);
             }
             if (this.controls.BOOST) {
                 const force = 128 * this.player.bumper.mass;
@@ -88,11 +90,11 @@ export default class PushPongClient {
 
         this.world.on('postStep', () => {
             if (this.opponentControls.LEFT) {
-                this.opponent.setVelocity(-30, 0);
+                this.opponent.setVelocity([-30, 0]);
             } else if (this.opponentControls.RIGHT) {
-                this.opponent.setVelocity(30, 0);
+                this.opponent.setVelocity([30, 0]);
             } else {
-                this.opponent.setVelocity(0, 0);
+                this.opponent.setVelocity([0, 0]);
             }
             if (this.opponentControls.BOOST) {
                 const force = 128 * this.opponent.bumper.mass;
@@ -136,6 +138,17 @@ export default class PushPongClient {
         this.socket.emit("control", value);
     };
 
+    onSnapshot = (message) => {
+        if (message.player) {
+            this.opponent.setPosition(message.player.position);
+            this.opponent.setVelocity(message.player.velocity);
+        }
+        if (message.ball) {
+            this.ball.position = message.ball.position;
+            this.ball.velocity = message.ball.velocity;
+        }
+    };
+
     // State Machine Methods
 
     onReceiveNumber(playerNumber) {
@@ -151,6 +164,11 @@ export default class PushPongClient {
             setTimeout(() => this.timer--, time*1000);
             time--;
         }
+        /*
+        setInterval(() => {
+            this.socket.emit("snapshot", createSnapshot(this.player, this.ball));
+        }, 10000);
+        */
     };
 
     onStart() {
@@ -168,9 +186,9 @@ export default class PushPongClient {
 
     onEnd() {
         hideBall(this.ball);
-    }
+    };
 
     onOpponentDisconnect() {
         hideBall(this.ball);
-    }
+    };
 }
