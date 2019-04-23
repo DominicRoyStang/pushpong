@@ -32,6 +32,17 @@ const main = () => {
         const match = joinMatch(playerId);
         socket.join(match.id);
 
+        const pingMilliseconds = 0;
+        socket.emit("ping");
+        const lastPingTimeMilliseconds = Date.now();
+        socket.on("pong", () => {
+            pingMilliseconds = Date.now() - lastPingTimeMilliseconds;
+            setTimeout(() => { // ping every 4 seconds.
+                socket.emit("ping");
+                lastPingTimeMilliseconds = Date.now();
+            }, 4000);
+        });
+
         // When the player is ready, emit its player number.
         socket.on("ready", () => {
             if (match.player1 && match.player1.id === playerId) {
@@ -62,8 +73,7 @@ const main = () => {
         });
 
         socket.on("goal", (data) => {
-            console.log(`playerid: ${playerId}, match host id: ${match.host.id}`);
-            if (!match.hotst || playerId !== match.host.id) {
+            if (!match.host || playerId !== match.host.id) {
                 return;
             }
 
@@ -88,6 +98,7 @@ const main = () => {
             if (!match.host || playerId !== match.host.id) { // Don't send ball position if not host
                 data = {player: data.player};
             }
+            data.ping = pingMilliseconds;
             socket.to(match.id).emit("snapshot", data);
             logger.info({message: `${playerId} snapshot.`, match: match.id});
         });

@@ -70,6 +70,7 @@ export default class PushPongClient {
         this.socket.on("end", () => this.fsm.end());
         this.socket.on("opponent-disconnect", () => this.fsm.opponentDisconnect());
         this.socket.on("snapshot", message => this.onSnapshot(message));
+        this.socket.on("ping", () => this.socket.emit("pong"));
     };
 
     /* Sets p2 world events to move players at each physics tick*/
@@ -164,11 +165,10 @@ export default class PushPongClient {
             setTimeout(() => this.timer--, time*1000);
             time--;
         }
-        /*
+
         setInterval(() => {
             this.socket.emit("snapshot", createSnapshot(this.player, this.ball));
-        }, 10000);
-        */
+        }, 1000);
     };
 
     onStart() {
