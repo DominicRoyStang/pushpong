@@ -67,8 +67,8 @@ export const addPlayer = (world, playerNumber) => {
 
 export const resetPlayer = (player, playerNumber) => {
     const {x, y} = playerPositions[playerNumber - 1];
-    player.setPosition(x, y);
-    player.setVelocity(0, 0);
+    player.setPosition([x, y]);
+    player.setVelocity([0, 0]);
 }
 
 const createPlayerBounds = (player) => {

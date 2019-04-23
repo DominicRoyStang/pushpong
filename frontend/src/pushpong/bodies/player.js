@@ -65,7 +65,9 @@ export default class Player {
         }
     }
 
-    setPosition(x, y) {
+    setPosition(position) {
+        const x = position[0];
+        const y = position[1];
         // Get the bumper's position relative to the paddle
         let bumperShift = [this.bumper.position[0] - this.paddle.position[0], this.bumper.position[1] - this.paddle.position[1]]; 
 
@@ -74,7 +76,9 @@ export default class Player {
         this.bumper.position = [x + bumperShift[0], y + bumperShift[1]];
     }
 
-    setVelocity(x, y) {
+    setVelocity(velocity) {
+        const x = velocity[0];
+        const y = velocity[1];
         // Set the paddle's horizontal velocity to x, and vertical velocity to y
         const paddleVelocity = [x, y];
         this.paddle.vectorToWorldFrame(this.paddle.velocity, paddleVelocity);
