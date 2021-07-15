@@ -1,3 +1,18 @@
+/*
+ * Production server that serves the build/ folder.
+ * The main reason for using this is so that we can inject environment variables in the frontend in production builds.
+ *
+ * This file is a combination of the following two strategies:
+ * https://create-react-app.dev/docs/title-and-meta-tags/#injecting-data-from-the-server-into-the-page
+ * https://create-react-app.dev/docs/deployment/#other-solutions
+ *
+ * In dev mode, we use environment variables prefixed with 'REACT_APP_' (which doesn't work with production builds)
+ * More info: https://create-react-app.dev/docs/adding-custom-environment-variables#referencing-environment-variables-in-the-html
+ *
+ * In the code, these two approaches are merged in the src/utils/environment.js file so that we can just import the variables.
+ * In short, there are three relevant files: server/app.js, public/index.html, and src/utils/environment.js
+ *
+ */
 const express = require("express");
 const fs = require("fs");
 const morgan = require("morgan");
@@ -14,9 +29,9 @@ const renderApp = (req, res) => {
             res.sendStatus(404);
         }
 
-        const rendered = htmlData.replace("__BACKEND_HOST__", `${process.env.BACKEND_HOST}`)
-                                 .replace("__BACKEND_PORT__", `${process.env.BACKEND_PORT}`)
-                                 .replace("__BACKEND_PROTOCOL__", "https");
+        const rendered = htmlData.replace('__BACKEND_HOST__', process.env.REACT_APP_BACKEND_HOST)
+                                 .replace('__BACKEND_PORT__', process.env.REACT_APP_BACKEND_PORT)
+                                 .replace('__BACKEND_PROTOCOL__', process.env.REACT_APP_BACKEND_PROTOCOL)
 
         res.send(rendered);
     });

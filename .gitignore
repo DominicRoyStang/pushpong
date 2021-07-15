@@ -1,1 +1,6 @@
-code_examples/
+# Terraform
+.terraform
+terraform/blockedtodo-account.json
+*.tfstate
+*.tfstate.*
+secret.tfvars
