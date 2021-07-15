@@ -1,33 +1,36 @@
 version: '3'
 
 services:
-    frontend:
-        image: pushpong_frontend:latest
-        build:
-            context: ./frontend
-            args:
-                app_env: dev
-                backend_host: localhost
-                backend_port: 5000
-        ports:
-            - "3000:3000"
-        volumes:
-            - ./frontend:/frontend
-            - frontend-deps:/frontend/node_modules
-
     backend:
-        image: pushpong_backend:latest
+        image: pushpong_backend
         build:
             context: ./backend
-            args:
-                app_env: dev
-        command: npm start
+        command: sh ./scripts/docker-start-dev.sh
         ports:
-            - "5000:5000"
+            - 3000:3000
+        stdin_open: true
         volumes:
             - ./backend/:/backend
             - backend-deps:/backend/node_modules
 
+    frontend:
+        image: pushpong_frontend
+        depends_on:
+            - backend
+        build:
+            context: ./frontend
+        environment:
+            - REACT_APP_BACKEND_PROTOCOL=http
+            - REACT_APP_BACKEND_HOST=localhost
+            - REACT_APP_BACKEND_PORT=3000
+        command: sh ./scripts/docker-start-dev.sh
+        ports:
+            - 3001:3001
+        stdin_open: true
+        volumes:
+            - ./frontend:/frontend
+            - frontend-deps:/frontend/node_modules
+
 volumes:
-    frontend-deps:
     backend-deps:
+    frontend-deps:
