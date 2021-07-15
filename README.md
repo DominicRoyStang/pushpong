@@ -1,6 +1,7 @@
 # Project Description
 **Push Pong** is a multiplayer version of the classic game _pong_ that has a few unique tweaks!
-Try it out now at [pushpong.xyz](http://www.pushpong.xyz)
+
+This project was once available at [pushpong.xyz](http://pushpong.xyz)
 
 _The site is currently **OFFLINE** for cost saving purposes._
 
@@ -10,10 +11,17 @@ _The site is currently **OFFLINE** for cost saving purposes._
 # Dev Requirements
 - Docker
 - Docker-compose
+- Make
 
 # Run the code
-`docker-compose --file docker-compose.yaml up --build`
+From the root of the repository, run the following commands
+
+1. `make build`
+2. `make start`
+
+The webapp will then be available at `localhost:3001`
 
 # Troubleshooting
-If there is ever an issue with a missing import, or something works with npm locally but not using docker-compose, run the following command
-`docker-compose --file docker-compose.yaml down -v`
+If there is ever an issue with a missing import, or something works with npm locally but not using docker-compose, run the following command:
+
+`make down`

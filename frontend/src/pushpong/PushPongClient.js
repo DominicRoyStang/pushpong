@@ -2,7 +2,7 @@ import io from "socket.io-client";
 import StateMachine from 'javascript-state-machine';
 import {World} from "p2";
 import Controls, {player1DefaultControls, player2DefaultControls, opponentControls} from "./controls";
-import {BACKEND_URL} from "config";
+import {BACKEND_URL} from "../utils/environment";
 import {worldSetup, addBall, resetBall, hideBall, addPlayer, resetPlayer} from "./worldSetup";
 import {createSnapshot} from "./snapshots";
 

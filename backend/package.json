@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_PATH=src nodemon src/index.js --ignore \"logs/*\"",
+    "start:prod": "NODE_PATH=src node src/",
     "test": "NODE_PATH=src jest"
   },
   "author": "",
