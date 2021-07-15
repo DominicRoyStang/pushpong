@@ -6,7 +6,7 @@ const logger = require("utils/logger");
 let matches = []; // TODO: use a linkedlist instead (yallist)
 
 const main = () => {
-    const port = normalizePort(process.env.PORT || 5000);
+    const port = normalizePort(process.env.PORT || 3000);
 
     const server = app.listen(port);
     server.on("error", onError(port));
@@ -58,7 +58,7 @@ const main = () => {
                 const countdownTimeSeconds = 5;
                 io.in(match.id).emit("countdown", countdownTimeSeconds);
                 logger.info({message: "countdown started", match: match.id});
-    
+
                 // Start (asynchronously) when timer ends
                 setTimeout(() => {
                     if (match.fsm.cannot("start")) {
@@ -109,7 +109,7 @@ const main = () => {
             match.removePlayer(playerId);
 
             match.fsm.leave();
-            
+
             io.in(match.id).emit("opponent-disconnect");
         });
     });

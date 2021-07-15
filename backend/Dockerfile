@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose ports in the container
-EXPOSE 5000
+EXPOSE 3000
 
 # Set default command that is called when the container runs
-CMD [ "npm", "start" ]
+CMD ["sh", "scripts/docker-start.sh"]
