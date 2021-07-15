@@ -168,7 +168,7 @@ export default class PushPongClient {
 
         setInterval(() => {
             this.socket.emit("snapshot", createSnapshot(this.player, this.ball));
-        }, 1000);
+        }, 100);
     };
 
     onStart() {
