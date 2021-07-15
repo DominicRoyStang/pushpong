@@ -15,12 +15,4 @@ steps:
       name: "gcr.io/cloud-builders/docker"
       args: ["push", "gcr.io/push-pong/pushpong_backend"]
 
-    - id: "Deploy frontend"
-      name: "gcr.io/cloud-builders/gcloud"
-      args: ["app", "deploy", "--stop-previous-version", "./frontend"]
-
-    - id: "Deploy backend"
-      name: "gcr.io/cloud-builders/gcloud"
-      args: ["app", "deploy", "--stop-previous-version", "./backend"]
-
 timeout: 2700s
