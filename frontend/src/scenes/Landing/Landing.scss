@@ -1,8 +1,29 @@
+@import 'styles/_colors.scss';
+@import 'styles/_dimens.scss';
+@import 'styles/_mixins.scss';
+
 .landing {
     align-items: center;
-    cursor: pointer;
+    background-color: $color-background;
     display: flex;
     flex-direction: column;
     height: 100%;
-    justify-content: center;
+    width: 100%;
+
+    .logo-container {
+        margin-top: 16vh;
+        margin-bottom: 8vh;
+    }
+
+    .buttons-container {
+        display: flex;
+        flex-direction: column;
+        width: 20rem;
+        height: 8rem;
+        justify-content: space-evenly;
+
+        .link-button {
+            width: 100%;
+        }
+    }
 }

@@ -7,8 +7,8 @@ b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
     border: 0;
@@ -26,11 +26,11 @@ ol, ul {
     list-style: none;
 }
 
-html { 
+html {
     box-sizing: border-box;
 }
 
-*, *:before, *:after { 
+*, *:before, *:after {
     box-sizing: inherit;
 }
 
@@ -40,4 +40,11 @@ a {
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
+}
+
+button {
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: normal;
+    padding: 0;
 }

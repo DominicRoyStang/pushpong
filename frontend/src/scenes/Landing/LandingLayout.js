@@ -1,11 +1,18 @@
 import React from "react";
-import {logo} from "images/";
+import {ONLINE_MULTIPLAYER_ENABLED} from "utils/environment";
+import {Button, Logo} from "components";
 
-const LandingLayout = ({onClick}) => (
-    <div className="landing" onClick={onClick}>
-        <img src={logo} className="app-logo" alt="logo" />
-        <h1>Push Pong</h1>
+const LandingLayout = ({onLocalClick, onOnlineClick}) => (
+    <div className="landing">
+        <div className="logo-container">
+            <Logo textVisible={true} />
+        </div>
+        <div className="buttons-container">
+            {ONLINE_MULTIPLAYER_ENABLED && <Button onClick={onOnlineClick} label="Online Multiplayer" />}
+            <Button onClick={onLocalClick} label="Local Multiplayer" />
+        </div>
     </div>
+
 );
 
 export default LandingLayout;

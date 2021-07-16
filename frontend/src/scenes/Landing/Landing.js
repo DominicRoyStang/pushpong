@@ -3,12 +3,11 @@ import history from "utils/history";
 import LandingLayout from "./LandingLayout";
 import "./Landing.scss";
 
-export default class Landing extends React.Component {
-    onClick = () => {history.push("/game")};
+const onLocalClick = () => history.push("/local");
+const onOnlineClick = () => history.push("/online");
 
-    render() {
-        return (
-            <LandingLayout onClick={this.onClick} />
-        )
-    }
-}
+const Landing = () => (
+    <LandingLayout onLocalClick={onLocalClick} onOnlineClick={onOnlineClick} />
+);
+
+export default Landing;

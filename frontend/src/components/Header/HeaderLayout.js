@@ -1,12 +1,9 @@
 import React from "react";
-import {logo} from "images/";
+import Logo from "components/Logo";
 
-const HeaderLayout = ({onLogoClick}) => (
+const HeaderLayout = () => (
     <header className="header">
-        <img src={logo} className="app-logo" alt="logo" onClick={onLogoClick} />
-        <h1 className="header-title" onClick={onLogoClick}>
-            <strong>Push Pong</strong>
-        </h1>
+        <Logo textVisible={true} />
     </header>
 );
 

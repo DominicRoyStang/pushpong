@@ -1,0 +1,26 @@
+@import 'styles/_colors.scss';
+@import "styles/_dimens.scss";
+@import 'styles/_mixins.scss';
+
+.app-logo {
+    background-color: $color-background;
+    border-radius: $default-border-radius;
+    cursor: pointer;
+    padding: 0 $default-spacing;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    @include hover-darken-background($color-background);
+
+    .logo-image {
+        width: 3.2rem;
+        height: 3.2rem;
+        fill: $color-text-primary;
+    }
+
+    .logo-text {
+        padding-left: $default-spacing;
+        color: $color-text-primary;
+    }
+}
