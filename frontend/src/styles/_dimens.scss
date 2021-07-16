@@ -1,5 +1,7 @@
-$default-spacing: 20px;
-$smooth-transition: cubic-bezier(0.4, 0.0, 0.2, 1);
+$default-spacing: 1rem;
+$default-border-radius: 0.6rem;
+$default-button-height: 2.5rem;
+$header-height: 5rem;
 
-$card-header-height: 35px;
-$card-height: 340px + $card-header-height;
+$smooth-transition: cubic-bezier(0.4, 0.0, 0.2, 1);
+$default-transition-time: 0.15s;

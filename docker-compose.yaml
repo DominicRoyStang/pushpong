@@ -23,6 +23,7 @@ services:
             - REACT_APP_BACKEND_PROTOCOL=http
             - REACT_APP_BACKEND_HOST=localhost
             - REACT_APP_BACKEND_PORT=3000
+            - REACT_APP_ONLINE_MULTIPLAYER_ENABLED=true
         command: sh ./scripts/docker-start-dev.sh
         ports:
             - 3001:3001
