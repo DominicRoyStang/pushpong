@@ -1,7 +1,9 @@
-import Game from "./Game";
+import OnlineGame from "./OnlineGame";
+import LocalGame from "./LocalGame";
 import Landing from "./Landing";
 
 export {
-    Game,
+    OnlineGame,
+    LocalGame,
     Landing
 };

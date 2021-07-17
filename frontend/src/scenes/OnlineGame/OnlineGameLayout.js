@@ -1,15 +1,15 @@
 import React from "react";
 import {GameRender, Header} from "components/"
 
-const GameLayout = () => (
+const OnlineGameLayout = () => (
     <React.Fragment>
         <Header />
         <div className="game-page">
             <div className="game">
-                <GameRender />
+                <GameRender local={false} />
             </div>
         </div>
     </React.Fragment>
 );
 
-export default GameLayout;
+export default OnlineGameLayout;
