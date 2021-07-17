@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 import StateMachine from 'javascript-state-machine';
 import {World} from "p2";
-import Controls, {player1DefaultControls, player2DefaultControls, opponentControls} from "./controls";
+import Controls, {opponentControls} from "./controls";
 import {BACKEND_URL} from "../utils/environment";
 import {worldSetup, addBall, resetBall, hideBall, addPlayer, resetPlayer} from "./worldSetup";
 import {createSnapshot} from "./snapshots";
@@ -73,7 +73,7 @@ export default class PushPongClient {
         this.socket.on("ping", () => this.socket.emit("pong"));
     };
 
-    /* Sets p2 world events to move players at each physics tick*/
+    /* Sets p2 world events to move players at each physics tick */
     setUpControlWorldEvents() {
         this.world.on('postStep', () => {
             if (this.controls.LEFT) {
@@ -107,11 +107,9 @@ export default class PushPongClient {
     /* Sets control settings depending on the player number the client is given by the server */
     setUpControls() {
         if (this.playerNumber === 1) {
-            this.controls.updateControls(player1DefaultControls);
             this.player = this.player1;
             this.opponent = this.player2;
         } else if (this.playerNumber === 2) {
-            this.controls.updateControls(player2DefaultControls);
             this.player = this.player2;
             this.opponent = this.player1;
         }
@@ -126,6 +124,14 @@ export default class PushPongClient {
             }
         });
     };
+
+    onKeyUp(e) {
+        this.controls.handleKeyUp(e);
+    }
+
+    onKeyDown(e) {
+        this.controls.handleKeyDown(e);
+    }
 
     onPlayer1Goal = () => {
         this.socket.emit("goal", {player: 1});

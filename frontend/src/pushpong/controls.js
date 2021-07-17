@@ -1,23 +1,30 @@
 const KEY_ARROW_LEFT = 37;
 const KEY_ARROW_UP = 38;
 const KEY_ARROW_RIGHT = 39;
-const KEY_ARROW_DOWN = 40;
-const KEY_A = 65;
+const KEY_ARROW_DOWN = 40; // eslint-disable-line
 const KEY_W = 87;
+const KEY_A = 65;
+const KEY_S = 83; // eslint-disable-line
 const KEY_D = 68;
-const KEY_S = 83;
 const KEY_SPACEBAR = 32;
+const KEY_ENTER = 13;
 
-export const player1DefaultControls = {
-    left_keys: [KEY_ARROW_LEFT, KEY_ARROW_UP, KEY_A, KEY_W],
-    right_keys: [KEY_ARROW_RIGHT, KEY_ARROW_DOWN, KEY_D, KEY_S],
-    boost_keys: [KEY_SPACEBAR]
+export const onlineControls = {
+    left_keys: [KEY_ARROW_LEFT, KEY_A],
+    right_keys: [KEY_ARROW_RIGHT, KEY_D],
+    boost_keys: [KEY_SPACEBAR, KEY_ARROW_UP, KEY_W]
 };
 
-export const player2DefaultControls = {
-    left_keys: [KEY_ARROW_LEFT, KEY_ARROW_DOWN, KEY_A, KEY_S],
-    right_keys: [KEY_ARROW_RIGHT, KEY_ARROW_UP, KEY_D, KEY_W],
-    boost_keys: [KEY_SPACEBAR]
+export const player1LocalControls = {
+    left_keys: [KEY_A],
+    right_keys: [KEY_D],
+    boost_keys: [KEY_SPACEBAR, KEY_W]
+};
+
+export const player2LocalControls = {
+    left_keys: [KEY_ARROW_LEFT],
+    right_keys: [KEY_ARROW_RIGHT],
+    boost_keys: [KEY_ARROW_UP, KEY_ENTER]
 };
 
 export const opponentControls = {
@@ -27,8 +34,7 @@ export const opponentControls = {
 };
 
 export default class Controls {
-
-    constructor(onChange, control_profile = player1DefaultControls) {
+    constructor(onChange, control_profile = onlineControls) {
         this.controls = {
             LEFT: control_profile.left_keys,
             RIGHT: control_profile.right_keys,
@@ -52,7 +58,7 @@ export default class Controls {
             // control already set to false
             return;
         }
-        
+
         this[control] = false;
         this.onChange(control);
     }
@@ -88,7 +94,7 @@ export default class Controls {
         this.controls = {
             LEFT: left_keys,
             RIGHT: right_keys,
-            BOOST: boost_keys 
+            BOOST: boost_keys
         };
     }
 };
