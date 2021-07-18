@@ -6,7 +6,7 @@ https://user-images.githubusercontent.com/28553263/126052427-13097ed8-663e-4f36-
 
 ⚠ This project is no longer maintained.
 
-Push Pong was once available at [pushpong.xyz](http://pushpong.xyz). _The site is now offline for cost saving purposes._
+Push Pong was once available at [pushpong.xyz](http://pushpong.xyz). _The site is now offline._
 
 
 ## Background
@@ -62,7 +62,7 @@ Instead, I would make Push Pong a desktop app and look to send data via UDP. The
 
 ## Contributing
 
-⚠ This project is not actively maintained. Forks of the project are welcome, as this project published under the [MIT license](./LICENSE).
+⚠ This project is not actively maintained. Forks of the project are welcome, as this project is published under the [MIT license](./LICENSE).
 
 ### Local development
 
